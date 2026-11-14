@@ -144,8 +144,12 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
-              pathname === item.href ||
-              (item.href !== "/teacher" && item.href !== "/school" && item.href !== "/system" && pathname.startsWith(item.href));
+              Boolean(pathname) &&
+              (pathname === item.href ||
+                (item.href !== "/teacher" &&
+                  item.href !== "/school" &&
+                  item.href !== "/system" &&
+                  pathname?.startsWith(item.href)));
 
             return (
               <Link
