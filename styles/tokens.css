@@ -1,0 +1,63 @@
+:root {
+  /* brand */
+  --primary-50: #EAF7F7;
+  --primary-100: #C9ECEC;
+  --primary-300: #62C2C5;
+  --primary-500: #168C93;
+  --primary-600: #0F7178;
+  --primary-700: #0D5C62;
+  --navy-900: #0B2545;
+  --accent-500: #E0A12B;
+  --accent-100: #FBF0D6;
+
+  /* neutral */
+  --neutral-0: #FFFFFF;
+  --neutral-50: #F4F6F8;
+  --neutral-100: #E9EDF1;
+  --neutral-200: #D8DEE5;
+  --neutral-400: #94A0AE;
+  --neutral-600: #4F5A69;
+  --neutral-900: #161D2A;
+
+  /* semantic */
+  --success: #1E7B4B;
+  --success-bg: #E6F4EC;
+  --warning: #A86412;
+  --warning-bg: #FDF1DC;
+  --danger: #B3392F;
+  --danger-bg: #FBE9E7;
+  --info: #1F63B5;
+  --info-bg: #E6F0FB;
+
+  /* levels */
+  --lvl-mastered: #1E7B4B;
+  --lvl-mastered-bg: #E6F4EC;
+  --lvl-proficient: #1F63B5;
+  --lvl-proficient-bg: #E6F0FB;
+  --lvl-developing: #A86412;
+  --lvl-developing-bg: #FDF1DC;
+  --lvl-needs-support: #B5532A;
+  --lvl-needs-support-bg: #FBEBE2;
+
+  /* subjects */
+  --subj-math: #4C4FD6;
+  --subj-science: #2A8A4A;
+  --subj-english: #B8438A;
+
+  /* shape & motion */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06);
+  --shadow-md: 0 4px 12px rgba(11, 37, 69, 0.08);
+  --shadow-lg: 0 12px 32px rgba(11, 37, 69, 0.12);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

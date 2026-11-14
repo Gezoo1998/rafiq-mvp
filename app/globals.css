@@ -1,0 +1,31 @@
+@import "../styles/tokens.css";
+@import "katex/dist/katex.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: var(--neutral-50);
+    color: var(--neutral-900);
+    font-family: var(--font-inter), var(--font-plex-arabic), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Arabic text typography */
+  [lang="ar"], :lang(ar) {
+    line-height: 1.5;
+    letter-spacing: normal;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
