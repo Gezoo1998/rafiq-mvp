@@ -9,6 +9,8 @@ const badgeVariants = cva(
       variant: {
         default:
           "bg-neutral-100 text-neutral-800 border border-neutral-200",
+        secondary:
+          "bg-neutral-100/80 text-neutral-700 border border-neutral-200/80",
         primary:
           "bg-primary-50 text-primary-700 border border-primary-100",
         success:
@@ -40,4 +42,3 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants };
-

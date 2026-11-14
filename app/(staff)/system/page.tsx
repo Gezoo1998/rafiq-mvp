@@ -20,10 +20,12 @@ import {
   UserPlus,
   Power,
   PowerOff,
-  CheckCircle2,
-  AlertCircle,
   Globe,
   Coins,
+  MapPin,
+  ShieldCheck,
+  Server,
+  Sparkles,
 } from "lucide-react";
 
 interface School {
@@ -60,6 +62,7 @@ export default function SystemSchoolsPage() {
 
   const fetchSchools = async () => {
     try {
+      setLoading(true);
       const res = await fetch("/api/system/schools");
       const data = await res.json();
       if (res.ok) {
@@ -145,71 +148,123 @@ export default function SystemSchoolsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
+    <div className="space-y-8 pb-12">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-navy-900">Schools Management</h1>
-          <p className="text-sm text-neutral-600">
-            Create and configure schools, manage daily AI limits, and provision school administrators
+          <div className="flex items-center gap-2 mb-1">
+            <div className="h-8 w-1 rounded-full bg-gradient-to-b from-primary-500 to-indigo-700" />
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
+              System Operations
+            </h1>
+          </div>
+          <p className="text-sm text-neutral-500 ml-3">
+            Register educational networks, provision tenant administrators, and regulate AI quotas
           </p>
         </div>
-        <Button
-          variant="primary"
-          onClick={() => setCreateSchoolOpen(true)}
-          className="gap-2 shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New School</span>
-        </Button>
+
+        <div className="flex items-center gap-2.5">
+          <Badge variant="primary" className="text-xs px-3 py-1 font-semibold">
+            {schools.length} Tenant School{schools.length === 1 ? "" : "s"}
+          </Badge>
+          <Button
+            variant="primary"
+            onClick={() => setCreateSchoolOpen(true)}
+            className="gap-2 shrink-0 rounded-xl font-bold text-xs shadow-md shadow-primary-500/20"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Register School</span>
+          </Button>
+        </div>
       </div>
 
       {/* School Cards Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-44 rounded-lg bg-neutral-200/50 animate-pulse" />
-          <div className="h-44 rounded-lg bg-neutral-200/50 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-pulse">
+          <div className="h-48 rounded-3xl bg-neutral-200/60" />
+          <div className="h-48 rounded-3xl bg-neutral-200/60" />
         </div>
       ) : schools.length === 0 ? (
-        <Card className="text-center py-12">
-          <Building2 className="h-12 w-12 text-neutral-400 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-navy-900">No schools yet</h3>
-          <p className="text-sm text-neutral-600 mb-4 max-w-sm mx-auto">
-            Get started by adding your first school and provisioning its administrator.
+        <Card className="text-center py-16 rounded-3xl border border-neutral-200 shadow-sm bg-white p-8">
+          <div className="w-16 h-16 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center mx-auto mb-4">
+            <Building2 className="h-8 w-8" />
+          </div>
+          <h3 className="text-lg font-bold text-navy-900">No schools registered yet</h3>
+          <p className="text-sm text-neutral-500 mb-6 max-w-sm mx-auto">
+            Get started by adding your first educational institution and provisioning its initial administrator.
           </p>
-          <Button variant="primary" onClick={() => setCreateSchoolOpen(true)}>
+          <Button variant="primary" onClick={() => setCreateSchoolOpen(true)} className="rounded-xl font-bold">
             <Plus className="h-4 w-4 mr-1.5" />
-            Add School
+            Add First School
           </Button>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {schools.map((school) => (
-            <Card key={school.id} className="relative overflow-hidden">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <CardTitle className="text-lg font-bold">{school.name}</CardTitle>
-                    <CardDescription>{school.city}, Saudi Arabia</CardDescription>
-                  </div>
-                  <Badge variant={school.isActive ? "success" : "danger"}>
-                    {school.isActive ? "Active" : "Inactive"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 text-xs py-2 px-3 bg-neutral-50 rounded-md border border-neutral-100">
-                  <div className="flex items-center gap-1.5 text-neutral-600">
-                    <Globe className="h-3.5 w-3.5 text-neutral-400" />
-                    <span>Language: <strong className="text-neutral-900 uppercase">{school.defaultLanguageMode}</strong></span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-neutral-600">
-                    <Coins className="h-3.5 w-3.5 text-neutral-400" />
-                    <span>Daily Cap: <strong className="text-neutral-900">{(school.aiDailyTokenCap / 1000).toLocaleString()}k</strong></span>
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {schools.map((school, idx) => {
+            const accents = [
+              "from-indigo-500 to-primary-600",
+              "from-emerald-500 to-teal-600",
+              "from-sky-500 to-blue-600",
+              "from-amber-500 to-orange-600",
+            ];
+            const accent = accents[idx % accents.length];
+
+            return (
+              <Card
+                key={school.id}
+                className="rounded-3xl border border-neutral-200/80 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden bg-white hover:border-primary-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className={`h-2 w-full bg-gradient-to-r ${accent}`} />
+                  <CardHeader className="pb-3 pt-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle className="text-xl font-extrabold text-navy-900 tracking-tight">
+                          {school.name}
+                        </CardTitle>
+                        <CardDescription className="text-xs text-neutral-500 mt-1 flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-primary-600" />
+                          <span>{school.city}, Saudi Arabia</span>
+                        </CardDescription>
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold shrink-0 ${
+                          school.isActive
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-neutral-100 text-neutral-500 border border-neutral-200"
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            school.isActive ? "bg-emerald-500" : "bg-neutral-400"
+                          }`}
+                        />
+                        {school.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-3 pb-4">
+                    <div className="grid grid-cols-2 gap-2 text-xs py-2.5 px-3.5 bg-neutral-50 rounded-2xl border border-neutral-100">
+                      <div className="flex items-center gap-2 text-neutral-600">
+                        <Globe className="h-4 w-4 text-primary-600 shrink-0" />
+                        <div>
+                          <span className="text-2xs text-neutral-400 block font-medium">Default Mode</span>
+                          <span className="font-bold text-navy-900 uppercase">{school.defaultLanguageMode}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-neutral-600">
+                        <Coins className="h-4 w-4 text-amber-500 shrink-0" />
+                        <div>
+                          <span className="text-2xs text-neutral-400 block font-medium">Daily AI Limit</span>
+                          <span className="font-bold text-navy-900">{(school.aiDailyTokenCap / 1000).toLocaleString()}k</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                <div className="p-4 bg-neutral-50/50 border-t border-neutral-100 flex items-center justify-between gap-2">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -217,17 +272,21 @@ export default function SystemSchoolsPage() {
                       setSelectedSchool(school);
                       setCreateAdminOpen(true);
                     }}
-                    className="gap-1.5 text-xs"
+                    className="gap-1.5 text-xs rounded-xl border-primary-200 text-primary-700 hover:bg-primary-50 font-bold"
                   >
                     <UserPlus className="h-3.5 w-3.5 text-primary-600" />
-                    <span>Create Admin</span>
+                    <span>Provision Admin</span>
                   </Button>
 
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleToggleSchoolStatus(school)}
-                    className={school.isActive ? "text-neutral-600 hover:text-semantic-danger text-xs" : "text-semantic-success text-xs"}
+                    className={`h-8 px-2.5 text-xs rounded-lg ${
+                      school.isActive
+                        ? "text-neutral-500 hover:text-rose-600 hover:bg-rose-50"
+                        : "text-emerald-600 hover:bg-emerald-50"
+                    }`}
                   >
                     {school.isActive ? (
                       <>
@@ -242,27 +301,28 @@ export default function SystemSchoolsPage() {
                     )}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
 
       {/* Dialog: Create School */}
       <Dialog open={createSchoolOpen} onOpenChange={setCreateSchoolOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle>Add New School</DialogTitle>
-            <DialogDescription>
-              Register an educational institution on Rafiq platform.
+            <DialogTitle className="text-xl font-bold text-navy-900">Register Educational Institution</DialogTitle>
+            <DialogDescription className="text-xs text-neutral-500">
+              Provision a new school tenant on the Rafiq Socratic platform.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleCreateSchool} className="space-y-4 py-2">
+          <form onSubmit={handleCreateSchool} className="space-y-4 py-3">
             <Input
               label="School Name"
               placeholder="e.g. Riyadh International Academy"
               value={newSchoolName}
               onChange={(e) => setNewSchoolName(e.target.value)}
+              className="rounded-xl h-10 text-xs"
               required
             />
             <Input
@@ -270,34 +330,36 @@ export default function SystemSchoolsPage() {
               placeholder="e.g. Riyadh, Jeddah, Dammam"
               value={newSchoolCity}
               onChange={(e) => setNewSchoolCity(e.target.value)}
+              className="rounded-xl h-10 text-xs"
               required
             />
-            <div className="space-y-1.5 text-start">
-              <label className="text-sm font-medium text-neutral-900">Default Language Mode</label>
+            <div className="space-y-1 text-start">
+              <label className="text-xs font-bold text-navy-900">Default Language Mode</label>
               <select
-                className="w-full h-10 px-3 rounded-md border border-neutral-200 bg-surface text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                className="w-full h-10 px-3 rounded-xl border border-neutral-300 bg-white text-xs font-semibold text-navy-900 focus:outline-none focus:border-primary-500"
                 value={newSchoolLang}
                 onChange={(e) => setNewSchoolLang(e.target.value as any)}
               >
                 <option value="mixed">Mixed (Arabic explanations + English terms)</option>
-                <option value="en">English only</option>
-                <option value="ar">Arabic only</option>
+                <option value="en">English Only</option>
+                <option value="ar">Arabic Only (العربية)</option>
               </select>
             </div>
             <Input
-              label="Daily Token Cap"
+              label="Daily AI Token Cap"
               type="number"
               value={newSchoolCap}
               onChange={(e) => setNewSchoolCap(e.target.value)}
               helperText="Default: 2,000,000 tokens per day"
+              className="rounded-xl h-10 text-xs font-mono"
               required
             />
-            <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setCreateSchoolOpen(false)}>
+            <DialogFooter className="gap-2 pt-2">
+              <Button type="button" variant="ghost" onClick={() => setCreateSchoolOpen(false)} className="rounded-xl text-xs">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" isLoading={creatingSchool}>
-                Create School
+              <Button type="submit" variant="primary" isLoading={creatingSchool} className="rounded-xl text-xs font-bold">
+                Register School
               </Button>
             </DialogFooter>
           </form>
@@ -306,26 +368,27 @@ export default function SystemSchoolsPage() {
 
       {/* Dialog: Create School Admin */}
       <Dialog open={createAdminOpen} onOpenChange={setCreateAdminOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle>Provision School Administrator</DialogTitle>
-            <DialogDescription>
-              Create an administrative account for <span className="font-semibold">{selectedSchool?.name}</span>.
+            <DialogTitle className="text-xl font-bold text-navy-900">Provision Administrator</DialogTitle>
+            <DialogDescription className="text-xs text-neutral-500">
+              Create an administrative account for <span className="font-bold text-navy-900">{selectedSchool?.name}</span>.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleCreateAdmin} className="space-y-4 py-2">
+          <form onSubmit={handleCreateAdmin} className="space-y-4 py-3">
             <Input
               label="Administrator Full Name"
               placeholder="e.g. Dr. Khalid Al-Mansoor"
               value={adminFullName}
               onChange={(e) => setAdminFullName(e.target.value)}
+              className="rounded-xl h-10 text-xs"
               required
             />
-            <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setCreateAdminOpen(false)}>
+            <DialogFooter className="gap-2 pt-2">
+              <Button type="button" variant="ghost" onClick={() => setCreateAdminOpen(false)} className="rounded-xl text-xs">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" isLoading={creatingAdmin}>
+              <Button type="submit" variant="primary" isLoading={creatingAdmin} className="rounded-xl text-xs font-bold">
                 Generate Admin Code
               </Button>
             </DialogFooter>
@@ -346,4 +409,3 @@ export default function SystemSchoolsPage() {
     </div>
   );
 }
-

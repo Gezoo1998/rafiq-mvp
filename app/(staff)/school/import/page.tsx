@@ -15,6 +15,8 @@ import {
   ArrowRight,
   Printer,
   Sparkles,
+  Check,
+  ShieldAlert,
 } from "lucide-react";
 
 type Step = 1 | 2 | 3 | 4;
@@ -149,72 +151,115 @@ export default function ImportWizardPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-4xl mx-auto pb-16">
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy-900">Spreadsheet Import Wizard</h1>
-        <p className="text-sm text-neutral-600">
-          Add students, teachers, and classes in bulk, then export personal login cards
+        <div className="flex items-center gap-2 mb-1">
+          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-primary-500 to-indigo-700" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
+            Spreadsheet Import Wizard
+          </h1>
+        </div>
+        <p className="text-sm text-neutral-500 ml-3">
+          Onboard school cohorts in bulk, configure curriculum standards, and generate secure login cards
         </p>
       </div>
 
-      {/* Stepper Header */}
-      <div className="grid grid-cols-4 gap-2 border-b border-neutral-200 pb-4 text-xs font-semibold">
-        <div className={`flex items-center gap-2 ${step >= 1 ? "text-primary-600" : "text-neutral-400"}`}>
-          <div className={`h-6 w-6 rounded-full flex items-center justify-center font-bold ${step >= 1 ? "bg-primary-600 text-white" : "bg-neutral-200 text-neutral-600"}`}>
-            1
-          </div>
-          <span className="hidden sm:inline">Download</span>
-        </div>
-        <div className={`flex items-center gap-2 ${step >= 2 ? "text-primary-600" : "text-neutral-400"}`}>
-          <div className={`h-6 w-6 rounded-full flex items-center justify-center font-bold ${step >= 2 ? "bg-primary-600 text-white" : "bg-neutral-200 text-neutral-600"}`}>
-            2
-          </div>
-          <span className="hidden sm:inline">Upload</span>
-        </div>
-        <div className={`flex items-center gap-2 ${step >= 3 ? "text-primary-600" : "text-neutral-400"}`}>
-          <div className={`h-6 w-6 rounded-full flex items-center justify-center font-bold ${step >= 3 ? "bg-primary-600 text-white" : "bg-neutral-200 text-neutral-600"}`}>
-            3
-          </div>
-          <span className="hidden sm:inline">Review & Commit</span>
-        </div>
-        <div className={`flex items-center gap-2 ${step === 4 ? "text-semantic-success" : "text-neutral-400"}`}>
-          <div className={`h-6 w-6 rounded-full flex items-center justify-center font-bold ${step === 4 ? "bg-semantic-success text-white" : "bg-neutral-200 text-neutral-600"}`}>
-            4
-          </div>
-          <span className="hidden sm:inline">Credentials</span>
-        </div>
+      {/* Modern Stepper Header */}
+      <div className="grid grid-cols-4 gap-2 p-1.5 bg-neutral-100/80 rounded-2xl border border-neutral-200/80">
+        {[
+          { num: 1, label: "Template" },
+          { num: 2, label: "Upload" },
+          { num: 3, label: "Validate" },
+          { num: 4, label: "Credentials" },
+        ].map((s) => {
+          const isCurrent = step === s.num;
+          const isPast = step > s.num;
+
+          return (
+            <div
+              key={s.num}
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all ${
+                isCurrent
+                  ? "bg-white shadow-xs border border-neutral-200 text-navy-900 font-bold"
+                  : isPast
+                  ? "text-emerald-700 font-semibold"
+                  : "text-neutral-400 font-medium"
+              }`}
+            >
+              <span
+                className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                  isCurrent
+                    ? "bg-primary-600 text-white"
+                    : isPast
+                    ? "bg-emerald-500 text-white"
+                    : "bg-neutral-200 text-neutral-600"
+                }`}
+              >
+                {isPast ? <Check className="h-3.5 w-3.5" /> : s.num}
+              </span>
+              <span className="text-xs truncate">{s.label}</span>
+            </div>
+          );
+        })}
       </div>
 
       {/* Step 1: Download Template */}
       {step === 1 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <FileSpreadsheet className="h-5 w-5 text-primary-600" />
-              <span>Step 1: Download Excel Template</span>
-            </CardTitle>
-            <CardDescription>
-              Use the official Rafiq workbook template formatted with sample rows and pre-configured dropdowns.
-            </CardDescription>
+        <Card className="rounded-3xl border border-neutral-200 shadow-sm bg-white overflow-hidden">
+          <div className="h-2 w-full bg-gradient-to-r from-primary-500 to-indigo-600" />
+          <CardHeader className="p-6 sm:p-8 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center">
+                <FileSpreadsheet className="h-5 w-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-navy-900">
+                  Step 1: Download Official Excel Template
+                </CardTitle>
+                <CardDescription className="text-xs text-neutral-500 mt-0.5">
+                  Pre-formatted workbook with validation rules and example entries
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 text-xs text-neutral-700 space-y-2">
-              <h4 className="font-bold text-navy-900 text-sm">Template Guidelines:</h4>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Students Sheet:</strong> Add student names, grade (6, 7, 8), curriculum (american or cambridge), and class section (e.g. 6A).</li>
-                <li><strong>Teachers Sheet:</strong> Add teacher names, assigned subjects (math, science, english), and their classes.</li>
-                <li>Classes not already present in the system will be created automatically.</li>
+          <CardContent className="p-6 sm:p-8 pt-2 space-y-6">
+            <div className="p-5 bg-gradient-to-br from-indigo-50/60 to-primary-50/60 rounded-2xl border border-primary-200/60 text-xs text-navy-900 space-y-3">
+              <h4 className="font-extrabold text-primary-900 text-sm flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary-600" />
+                Template Specifications & Guidelines:
+              </h4>
+              <ul className="space-y-1.5 text-neutral-700 list-disc pl-5">
+                <li>
+                  <strong className="text-navy-900">Students Sheet:</strong> Enter full student names, grade (6, 7, 8), curriculum (<code className="bg-white px-1 py-0.5 rounded border border-neutral-200">american</code> or <code className="bg-white px-1 py-0.5 rounded border border-neutral-200">cambridge</code>), and class section code (e.g. <code className="bg-white px-1 py-0.5 rounded border border-neutral-200">6A</code>).
+                </li>
+                <li>
+                  <strong className="text-navy-900">Teachers Sheet:</strong> Enter educator full names, subjects (<code className="bg-white px-1 py-0.5 rounded border border-neutral-200">math</code>, <code className="bg-white px-1 py-0.5 rounded border border-neutral-200">science</code>, <code className="bg-white px-1 py-0.5 rounded border border-neutral-200">english</code>), and assigned class sections.
+                </li>
+                <li>
+                  Class sections specified in your roster will be created automatically in your school hierarchy if not already present.
+                </li>
               </ul>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <Button variant="primary" size="lg" onClick={handleDownloadTemplate} className="gap-2">
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleDownloadTemplate}
+                className="gap-2 rounded-xl text-xs font-bold shadow-md shadow-primary-500/25 h-12 px-6"
+              >
                 <Download className="h-4 w-4" />
                 <span>Download rafiq-import-template.xlsx</span>
               </Button>
-              <Button variant="secondary" size="lg" onClick={() => setStep(2)}>
-                <span>Already have a completed file? Skip to Upload</span>
-                <ArrowRight className="ml-1.5 h-4 w-4" />
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => setStep(2)}
+                className="rounded-xl text-xs font-semibold h-12 px-6"
+              >
+                <span>Already filled out? Continue to Upload</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </CardContent>
@@ -223,18 +268,25 @@ export default function ImportWizardPage() {
 
       {/* Step 2: Upload */}
       {step === 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Upload className="h-5 w-5 text-primary-600" />
-              <span>Step 2: Upload Completed File</span>
-            </CardTitle>
-            <CardDescription>
-              Upload your completed spreadsheet (.xlsx, max 5 MB).
-            </CardDescription>
+        <Card className="rounded-3xl border border-neutral-200 shadow-sm bg-white overflow-hidden">
+          <div className="h-2 w-full bg-gradient-to-r from-indigo-500 to-sky-600" />
+          <CardHeader className="p-6 sm:p-8 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <Upload className="h-5 w-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-navy-900">
+                  Step 2: Upload Completed Spreadsheet
+                </CardTitle>
+                <CardDescription className="text-xs text-neutral-500 mt-0.5">
+                  Select your updated roster workbook (.xlsx, max 5 MB)
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="border-2 border-dashed border-neutral-300 rounded-xl p-8 text-center bg-neutral-50 hover:bg-neutral-100/50 transition-colors">
+          <CardContent className="p-6 sm:p-8 pt-2 space-y-6">
+            <div className="border-2 border-dashed border-neutral-300 hover:border-primary-500 rounded-3xl p-10 text-center bg-neutral-50/60 hover:bg-primary-50/20 transition-all cursor-pointer">
               <input
                 type="file"
                 id="file-upload"
@@ -242,29 +294,33 @@ export default function ImportWizardPage() {
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <label htmlFor="file-upload" className="cursor-pointer block space-y-2">
-                <FileSpreadsheet className="h-10 w-10 text-primary-600 mx-auto" />
-                <p className="text-sm font-semibold text-navy-900">
-                  {file ? file.name : "Click to select or drag and drop your .xlsx file"}
-                </p>
-                <p className="text-xs text-neutral-500">
-                  {file ? `${(file.size / 1024).toFixed(1)} KB` : "Excel files up to 5 MB"}
-                </p>
+              <label htmlFor="file-upload" className="cursor-pointer block space-y-3">
+                <div className="h-14 w-14 rounded-2xl bg-primary-100 text-primary-700 flex items-center justify-center mx-auto">
+                  <FileSpreadsheet className="h-7 w-7" />
+                </div>
+                <div>
+                  <p className="text-base font-bold text-navy-900">
+                    {file ? file.name : "Click to select or drag and drop your completed file"}
+                  </p>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    {file ? `${(file.size / 1024).toFixed(1)} KB uploaded` : "Standard Microsoft Excel format (.xlsx)"}
+                  </p>
+                </div>
               </label>
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <Button variant="ghost" onClick={() => setStep(1)}>
-                Back to Download
+              <Button variant="ghost" onClick={() => setStep(1)} className="rounded-xl text-xs">
+                Back to Template
               </Button>
               <Button
                 variant="primary"
                 disabled={!file}
                 isLoading={previewing}
                 onClick={handleUploadAndPreview}
-                className="gap-2"
+                className="gap-2 rounded-xl text-xs font-bold px-6 h-11 shadow-md shadow-primary-500/20"
               >
-                <span>Upload & Validate</span>
+                <span>Upload & Validate Roster</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
@@ -274,34 +330,41 @@ export default function ImportWizardPage() {
 
       {/* Step 3: Review & Commit */}
       {step === 3 && previewData && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-primary-600" />
-              <span>Step 3: Review Import Preview</span>
-            </CardTitle>
-            <CardDescription>
-              Review parsed rows and fix any validation errors before final commit.
-            </CardDescription>
+        <Card className="rounded-3xl border border-neutral-200 shadow-sm bg-white overflow-hidden">
+          <div className="h-2 w-full bg-gradient-to-r from-sky-500 to-emerald-600" />
+          <CardHeader className="p-6 sm:p-8 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-navy-900">
+                  Step 3: Verification & Batch Summary
+                </CardTitle>
+                <CardDescription className="text-xs text-neutral-500 mt-0.5">
+                  Confirm row counts and resolve any schema validation errors before database commit
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="p-6 sm:p-8 pt-2 space-y-6">
             {/* Counts breakdown */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-center">
-                <span className="text-2xs uppercase font-semibold text-neutral-600">Students</span>
-                <p className="text-xl font-bold text-navy-900">{previewData.summary.totalStudents}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-center">
+                <span className="text-2xs uppercase font-bold text-neutral-500">Students Parsed</span>
+                <p className="text-2xl font-black text-navy-900 mt-1">{previewData.summary.totalStudents}</p>
               </div>
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-center">
-                <span className="text-2xs uppercase font-semibold text-neutral-600">Teachers</span>
-                <p className="text-xl font-bold text-navy-900">{previewData.summary.totalTeachers}</p>
+              <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-center">
+                <span className="text-2xs uppercase font-bold text-neutral-500">Teachers Parsed</span>
+                <p className="text-2xl font-black text-navy-900 mt-1">{previewData.summary.totalTeachers}</p>
               </div>
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-center">
-                <span className="text-2xs uppercase font-semibold text-neutral-600">Classes</span>
-                <p className="text-xl font-bold text-navy-900">{previewData.summary.totalClasses}</p>
+              <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-center">
+                <span className="text-2xs uppercase font-bold text-neutral-500">Classes Mapped</span>
+                <p className="text-2xl font-black text-navy-900 mt-1">{previewData.summary.totalClasses}</p>
               </div>
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-center">
-                <span className="text-2xs uppercase font-semibold text-neutral-600">Errors</span>
-                <p className={`text-xl font-bold ${previewData.errors.length > 0 ? "text-semantic-danger" : "text-semantic-success"}`}>
+              <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-2xl text-center">
+                <span className="text-2xs uppercase font-bold text-neutral-500">Validation Errors</span>
+                <p className={`text-2xl font-black mt-1 ${previewData.errors.length > 0 ? "text-rose-600" : "text-emerald-600"}`}>
                   {previewData.errors.length}
                 </p>
               </div>
@@ -310,31 +373,31 @@ export default function ImportWizardPage() {
             {/* Errors Table if any */}
             {previewData.errors.length > 0 && (
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-semantic-danger font-semibold text-sm">
+                <div className="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider">
                   <AlertCircle className="h-4 w-4" />
-                  <span>Validation Issues Found ({previewData.errors.length})</span>
+                  <span>Validation Issues Detected ({previewData.errors.length})</span>
                 </div>
-                <div className="max-h-60 overflow-y-auto border border-red-200 rounded-lg divide-y divide-red-100 bg-red-50/40 text-xs">
+                <div className="max-h-60 overflow-y-auto border border-rose-200 rounded-2xl divide-y divide-rose-100 bg-rose-50/50 text-xs">
                   {previewData.errors.map((err: ImportErrorItem, idx: number) => (
-                    <div key={idx} className="p-2.5 flex items-start gap-2">
-                      <span className="font-semibold text-red-900">
+                    <div key={idx} className="p-3 flex items-start gap-2">
+                      <span className="font-bold text-rose-950 shrink-0">
                         Row {err.row} ({err.sheet}):
                       </span>
-                      <span className="text-red-700">
-                        {err.column} — {err.message}
+                      <span className="text-rose-800">
+                        <strong className="underline">{err.column}</strong> — {err.message}
                       </span>
                     </div>
                   ))}
                 </div>
                 <p className="text-xs text-neutral-500">
-                  Please fix these errors in your spreadsheet and upload again.
+                  Please fix these items in your original spreadsheet file and upload again.
                 </p>
               </div>
             )}
 
             {/* Action buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-neutral-100">
-              <Button variant="ghost" onClick={() => setStep(2)}>
+            <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+              <Button variant="ghost" onClick={() => setStep(2)} className="rounded-xl text-xs">
                 Upload Different File
               </Button>
               <Button
@@ -342,9 +405,9 @@ export default function ImportWizardPage() {
                 disabled={previewData.errors.length > 0}
                 isLoading={committing}
                 onClick={handleCommit}
-                className="gap-2"
+                className="gap-2 rounded-xl text-xs font-bold px-6 h-11 shadow-md shadow-primary-500/20"
               >
-                <span>Commit & Generate Codes</span>
+                <span>Commit & Generate Access Codes</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
@@ -354,25 +417,26 @@ export default function ImportWizardPage() {
 
       {/* Step 4: Done & Download Credentials */}
       {step === 4 && (
-        <Card className="border-primary-200 bg-gradient-to-b from-surface to-primary-50/20">
-          <CardHeader className="text-center pb-4">
-            <div className="h-12 w-12 rounded-full bg-semantic-success-bg text-semantic-success flex items-center justify-center mx-auto mb-2">
-              <Sparkles className="h-6 w-6" />
+        <Card className="rounded-3xl border-2 border-emerald-300 bg-gradient-to-b from-white to-emerald-50/20 shadow-xl overflow-hidden">
+          <div className="h-2 w-full bg-gradient-to-r from-emerald-500 to-teal-600" />
+          <CardHeader className="text-center p-8 pb-4">
+            <div className="h-16 w-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <Sparkles className="h-8 w-8" />
             </div>
-            <CardTitle className="text-2xl font-extrabold text-navy-900">
-              Import Completed Successfully!
+            <CardTitle className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
+              Roster Import Completed Successfully!
             </CardTitle>
-            <CardDescription className="text-sm">
+            <CardDescription className="text-xs sm:text-sm text-neutral-600 mt-1">
               Created {commitSummary?.students} students, {commitSummary?.teachers} teachers, and {commitSummary?.classes} class sections.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-700 shrink-0 mt-0.5" />
+          <CardContent className="p-6 sm:p-8 pt-2 space-y-6">
+            <div className="p-5 bg-amber-50 rounded-2xl border border-amber-200 flex items-start gap-3.5">
+              <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
               <div className="text-xs text-amber-900 space-y-1">
-                <p className="font-bold">Save or print login codes now!</p>
-                <p>
-                  For security, personal access codes are displayed and exported <strong>only at this moment</strong>. They are encrypted with a cryptographic pepper and cannot be retrieved from the database later.
+                <p className="font-bold text-amber-950">Crucial: Export and save credentials immediately</p>
+                <p className="leading-relaxed">
+                  For privacy and cryptographic security, personal access codes are displayed <strong>only during this session</strong>. They are encrypted with a salted HMAC pepper and cannot be retrieved in plaintext from the database later.
                 </p>
               </div>
             </div>
@@ -383,12 +447,12 @@ export default function ImportWizardPage() {
                 variant="primary"
                 size="lg"
                 onClick={() => handleExportCredentials("xlsx")}
-                className="gap-2 h-14"
+                className="gap-3 h-16 rounded-2xl shadow-md shadow-primary-500/20"
               >
-                <FileSpreadsheet className="h-5 w-5" />
+                <FileSpreadsheet className="h-6 w-6 text-white" />
                 <div className="text-start">
-                  <div className="font-bold text-sm">Download Excel Roster</div>
-                  <div className="text-2xs opacity-80 font-normal">All names and login codes</div>
+                  <div className="font-bold text-sm">Download Excel Credentials</div>
+                  <div className="text-2xs opacity-80 font-normal">All account names and login codes</div>
                 </div>
               </Button>
 
@@ -396,29 +460,34 @@ export default function ImportWizardPage() {
                 variant="secondary"
                 size="lg"
                 onClick={() => handleExportCredentials("pdf")}
-                className="gap-2 h-14 border-primary-300 hover:bg-primary-50"
+                className="gap-3 h-16 rounded-2xl border-primary-200 hover:bg-primary-50"
               >
-                <Printer className="h-5 w-5 text-primary-600" />
+                <Printer className="h-6 w-6 text-primary-600" />
                 <div className="text-start">
                   <div className="font-bold text-sm text-navy-900">Print Student Cards (PDF)</div>
-                  <div className="text-2xs text-neutral-600 font-normal">8 ready-to-cut cards per A4 page</div>
+                  <div className="text-2xs text-neutral-500 font-normal">8 ready-to-cut login slips per A4 sheet</div>
                 </div>
               </Button>
             </div>
 
             {/* Table of created credentials preview */}
-            <div className="space-y-2 pt-4 border-t border-neutral-200">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-600">
-                Generated Accounts Preview ({credentials.length})
-              </h4>
-              <div className="max-h-72 overflow-y-auto border border-neutral-200 rounded-lg divide-y divide-neutral-200 text-xs bg-surface">
+            <div className="space-y-3 pt-4 border-t border-neutral-200">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  Generated Accounts Preview ({credentials.length})
+                </h4>
+                <Badge variant="primary" className="text-2xs font-semibold">
+                  Showing First 30
+                </Badge>
+              </div>
+              <div className="max-h-72 overflow-y-auto border border-neutral-200 rounded-2xl divide-y divide-neutral-100 text-xs bg-white">
                 {credentials.slice(0, 30).map((c, i) => (
-                  <div key={i} className="p-3 flex items-center justify-between">
+                  <div key={i} className="p-3.5 flex items-center justify-between hover:bg-neutral-50">
                     <div>
-                      <span className="font-semibold text-navy-900">{c.name}</span>
-                      <span className="text-neutral-500 ml-2">({c.role} • {c.class})</span>
+                      <span className="font-bold text-navy-900">{c.name}</span>
+                      <span className="text-neutral-400 ml-2">({c.role} • {c.class})</span>
                     </div>
-                    <span className="font-mono font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-200">
+                    <span className="font-mono font-bold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-lg border border-primary-200">
                       {c.code}
                     </span>
                   </div>
@@ -431,4 +500,3 @@ export default function ImportWizardPage() {
     </div>
   );
 }
-
