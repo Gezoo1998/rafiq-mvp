@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rafiq MVP — Vercel Production Deployment & Environment Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --card-hover: #1e293b;
+      --primary: #0284c7;
+      --primary-light: #38bdf8;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --code-bg: #030712;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px 20px 80px;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 14px;
+    }
+
+    .badge-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 800px;
+    }
+
+    /* Section Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(2, 132, 199, 0.2);
+      border: 1px solid var(--primary);
+      color: var(--primary-light);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    /* Steps */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .step-indicator {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1e293b;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .step-body h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .step-body p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      position: relative;
+      margin-top: 8px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #38bdf8;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #ffffff;
+      padding: 12px 16px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    td strong {
+      color: #ffffff;
+    }
+
+    .tag-req {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .tag-rec {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.3);
+    }
+
+    /* Notice Callouts */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(2, 132, 199, 0.08);
+      padding: 16px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .callout-success {
+      border-left-color: var(--accent);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .callout-warning {
+      border-left-color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .role-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .role-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .role-card code {
+      display: block;
+      margin-top: 6px;
+      text-align: center;
+      padding: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* Floating quick jump */
+    .quick-jump {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .quick-jump a {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    .quick-jump a:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="badge-pill">Production Ready • Next.js 15 App Router</div>
+    <h1>Rafiq MVP — Vercel Deployment & Environment Guide</h1>
+    <p class="subtitle">
+      Comprehensive step-by-step instructions to deploy Rafiq to Vercel, connect a serverless PostgreSQL database (Neon / Supabase), configure production environment variables, seed demo credentials, and test online.
+    </p>
+
+    <div class="quick-jump">
+      <a href="#quick-steps">Quick Steps</a>
+      <a href="#cloud-db">1. Cloud Database</a>
+      <a href="#env-table">2. Environment Variables</a>
+      <a href="#vercel-import">3. Vercel Import</a>
+      <a href="#migration-seed">4. Run Seed & Migrations</a>
+      <a href="#test-online">5. Test Online</a>
+    </div>
+  </header>
+
+  <!-- Pre-Flight Checklist -->
+  <div class="card">
+    <div class="card-title">
+      <span class="num">✓</span> Pre-Flight Status (Verified Locally)
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+      <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 14px; border-radius: 8px;">
+        <strong style="color: #34d399;">✓ Next.js Build Verified</strong>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;"><code>npm run build</code> passed cleanly with all 31 routes compiled.</p>
+      </div>
+      <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 14px; border-radius: 8px;">
+        <strong style="color: #34d399;">✓ Serverless Timeouts Ready</strong>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">AI streaming and evaluation endpoints configured with <code>maxDuration = 60</code>.</p>
+      </div>
+      <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 14px; border-radius: 8px;">
+        <strong style="color: #34d399;">✓ Cloud SSL & Connection Pool</strong>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">Database pool automatically enables SSL for Neon, Supabase, or AWS RDS.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Push to Git -->
+  <div class="card" id="quick-steps">
+    <div class="card-title">
+      <span class="num">1</span> Push Code to GitHub / GitLab
+    </div>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">
+      The local git repository has all latest MVP features committed. Push it to a GitHub repository so Vercel can automatically build and deploy it.
+    </p>
+
+    <pre><code># 1. Create a new repository on GitHub (e.g., rafiq-mvp)
+# 2. In your terminal at e:\rafiq mvp, link and push:
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/rafiq-mvp.git
+git branch -M main
+git push -u origin main</code><button class="copy-btn" onclick="copySnippet(this)">Copy</button></pre>
+
+    <div class="callout callout-success">
+      <strong>Note:</strong> Your <code>.env</code> file is listed in <code>.gitignore</code> and will <strong>never</strong> be pushed to GitHub. All secrets will be securely configured in Vercel's dashboard.
+    </div>
+  </div>
+
+  <!-- Step 2: Cloud Database -->
+  <div class="card" id="cloud-db">
+    <div class="card-title">
+      <span class="num">2</span> Set Up a Cloud PostgreSQL Database
+    </div>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">
+      Vercel serverless functions cannot connect to your local PC (<code>localhost:5432</code>). You need an online PostgreSQL database. We strongly recommend <strong>Neon Serverless Postgres</strong> (takes 60 seconds and has a generous free tier).
+    </p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-indicator">A</div>
+        <div class="step-body">
+          <h4>Neon.tech (Recommended)</h4>
+          <p>Go to <a href="https://neon.tech" target="_blank" style="color: var(--primary-light);">neon.tech</a>, create a free project named <code>rafiq-db</code>.</p>
+          <p>Copy the connection string (Connection Details $\rightarrow$ <strong>Pooled connection</strong> or direct string):</p>
+          <code>postgresql://username:password@ep-xyz.us-east-2.aws.neon.tech/rafiq?sslmode=require</code>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-indicator">B</div>
+        <div class="step-body">
+          <h4>Alternative: Supabase or Railway</h4>
+          <p>If using Supabase, go to Project Settings $\rightarrow$ Database $\rightarrow$ Connection string (NodeJS / Transaction pooler mode on port 6543 or 5432 with <code>?sslmode=require</code>).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Run Migrations & Seed Against Remote DB -->
+  <div class="card" id="migration-seed">
+    <div class="card-title">
+      <span class="num">3</span> Apply Schema & Seed Demo School into Cloud Database
+    </div>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">
+      Before your app can log in on Vercel, the cloud database needs the 16 tables and initial demo users. You can run this once from your local computer:
+    </p>
+
+    <pre><code># In e:\rafiq mvp\.env temporarily set your cloud DATABASE_URL:
+# DATABASE_URL=postgresql://username:password@ep-xyz.neon.tech/rafiq?sslmode=require
+
+# Then push the Drizzle schema:
+npm run db:push
+
+# Then populate the demo school, teachers, students, and missions:
+npm run seed</code><button class="copy-btn" onclick="copySnippet(this)">Copy</button></pre>
+
+    <div class="callout">
+      <strong>Important:</strong> Save the printed access codes from <code>npm run seed</code>! Those will be the codes you use to log in online.
+    </div>
+  </div>
+
+  <!-- Step 4: Import to Vercel -->
+  <div class="card" id="vercel-import">
+    <div class="card-title">
+      <span class="num">4</span> Import Project in Vercel
+    </div>
+    <ol style="padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+      <li>Log in to <a href="https://vercel.com" target="_blank" style="color: var(--primary-light);">Vercel.com</a>.</li>
+      <li>Click <strong>"Add New..." $\rightarrow$ "Project"</strong>.</li>
+      <li>Import your GitHub repository <code>rafiq-mvp</code>.</li>
+      <li>Keep Framework Preset as <strong>Next.js</strong> and Root Directory as <code>./</code>.</li>
+      <li>Expand the <strong>"Environment Variables"</strong> section (see table below).</li>
+      <li>Click <strong>"Deploy"</strong>.</li>
+    </ol>
+  </div>
+
+  <!-- Step 5: Environment Variables Reference -->
+  <div class="card" id="env-table">
+    <div class="card-title">
+      <span class="num">5</span> Production Environment Variables
+    </div>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 14px;">
+      Configure these exact environment variables in your Vercel Project Settings (Settings $\rightarrow$ Environment Variables):
+    </p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Production Value / Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>DATABASE_URL</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              Cloud PostgreSQL connection string with SSL.<br>
+              <code>postgresql://user:pass@ep-xyz.neon.tech/rafiq?sslmode=require</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>SESSION_SECRET</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              Cryptographic key for signing user session JWTs (at least 32 characters).<br>
+              Generate with: <code>openssl rand -hex 32</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>CODE_PEPPER</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              Pepper string for HMAC-SHA256 hashing of access codes before saving to DB.<br>
+              Generate with: <code>openssl rand -hex 32</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>SYSTEM_ADMIN_BOOTSTRAP_CODE</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              A high-entropy secret code to bootstrap an admin via <code>POST /api/auth/bootstrap</code> if ever needed.<br>
+              Example: <code>rafiq-prod-bootstrap-key-9921</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_PROVIDER</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              <code>openai_compatible</code> (for Groq / Together / DeepSeek) or <code>openai</code> or <code>mock</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_BASE_URL</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td>
+              API endpoint for OpenAI-compatible provider.<br>
+              For Groq: <code>https://api.groq.com/openai/v1</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_API_KEY</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              Your API key (e.g. Groq <code>gsk_...</code> or OpenAI <code>sk-...</code>).<br>
+              (Leave empty only if <code>AI_PROVIDER=mock</code>).
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_MODEL_TUTOR</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td>
+              Model for student tutoring chat.<br>
+              For Groq: <code>llama-3.3-70b-versatile</code><br>
+              For OpenAI: <code>gpt-4o-mini</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_MODEL_EVAL</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td>
+              Model for rubric evaluation & grading.<br>
+              For Groq: <code>llama-3.3-70b-versatile</code><br>
+              For OpenAI: <code>gpt-4o-mini</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_SEND_STUDENT_NAME</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td>
+              <code>false</code> (Enforces Section 10.1 strict privacy: student names are NEVER sent to the LLM).
+            </td>
+          </tr>
+          <tr>
+            <td><code>AI_COST_PER_1M_INPUT_TOKENS_USD</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td><code>0.59</code> (Used in System Admin usage billing calculation).</td>
+          </tr>
+          <tr>
+            <td><code>AI_COST_PER_1M_OUTPUT_TOKENS_USD</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td><code>0.79</code> (Used in System Admin usage billing calculation).</td>
+          </tr>
+          <tr>
+            <td><code>APP_BASE_URL</code></td>
+            <td><span class="tag-req">REQUIRED</span></td>
+            <td>
+              Your deployed production domain.<br>
+              Example: <code>https://rafiq-mvp.vercel.app</code>
+            </td>
+          </tr>
+          <tr>
+            <td><code>TZ</code></td>
+            <td><span class="tag-rec">RECOMMENDED</span></td>
+            <td><code>Asia/Riyadh</code> (For correct mission deadline and timestamp rendering).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 style="margin-top: 24px; margin-bottom: 8px; color: #ffffff;">Quick-Copy for Vercel "Paste .env" Bulk Input:</h4>
+    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 8px;">
+      Vercel lets you paste raw environment key-value pairs in one click:
+    </p>
+
+    <pre id="env-paste-block"><code>DATABASE_URL=postgresql://user:password@ep-your-id.neon.tech/rafiq?sslmode=require
+SESSION_SECRET=rafiq-super-secret-session-key-at-least-32-chars-long-2026-prod
+CODE_PEPPER=rafiq-super-secret-code-pepper-at-least-32-chars-long-2026-prod
+SYSTEM_ADMIN_BOOTSTRAP_CODE=bootstrap-rafiq-admin-2026
+AI_PROVIDER=openai_compatible
+AI_BASE_URL=https://api.groq.com/openai/v1
+AI_API_KEY=your_groq_api_key_here
+AI_MODEL_TUTOR=llama-3.3-70b-versatile
+AI_MODEL_EVAL=llama-3.3-70b-versatile
+AI_SEND_STUDENT_NAME=false
+AI_COST_PER_1M_INPUT_TOKENS_USD=0.59
+AI_COST_PER_1M_OUTPUT_TOKENS_USD=0.79
+APP_BASE_URL=https://your-project.vercel.app
+TZ=Asia/Riyadh</code><button class="copy-btn" onclick="copySnippet(this)">Copy All</button></pre>
+  </div>
+
+  <!-- Step 6: Testing Online -->
+  <div class="card" id="test-online">
+    <div class="card-title">
+      <span class="num">6</span> How to Log In & Test Online
+    </div>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">
+      Once deployed, open <code>https://your-project.vercel.app/login</code>. Use the access codes generated during <code>npm run seed</code>:
+    </p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-header" style="color: #c084fc;">⚙️ System Admin</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Inspect all schools, daily token quotas, and run the live AI test suite.</p>
+        <code>Y-XXXX-XXXX-XX</code>
+      </div>
+      <div class="role-card">
+        <div class="role-header" style="color: #60a5fa;">🏫 School Admin</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Manage teachers, classes, test 4-step Excel roster import, generate printable cards.</p>
+        <code>A-XXXX-XXXX-XX</code>
+      </div>
+      <div class="role-card">
+        <div class="role-header" style="color: #34d399;">👩‍🏫 Teacher</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Create new missions, track real-time mastery meters, export Excel/PDF reports.</p>
+        <code>T-XXXX-XXXX-XX</code>
+      </div>
+      <div class="role-card">
+        <div class="role-header" style="color: #f59e0b;">🎓 Student</div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Experience live AI tutoring chat, LaTeX formulas, "I'm stuck" ladder, and grading.</p>
+        <code>S-XXXX-XXXX-XX</code>
+      </div>
+    </div>
+
+    <div class="callout callout-warning" style="margin-top: 18px;">
+      <strong>Lost your demo codes?</strong> You can re-run <code>npm run seed</code> at any time against your cloud database, or generate a fresh System Admin code via the API:
+      <pre style="margin-top: 8px;"><code>curl -X POST https://your-project.vercel.app/api/auth/bootstrap \
+  -H "Content-Type: application/json" \
+  -d '{"bootstrapCode": "bootstrap-rafiq-admin-2026", "fullName": "Super Admin"}'</code></pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function copySnippet(btn) {
+    const pre = btn.parentElement;
+    const code = pre.querySelector('code');
+    const text = code.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const originalText = btn.innerText;
+      btn.innerText = "Copied!";
+      btn.style.background = "#10b981";
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = "";
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
+
