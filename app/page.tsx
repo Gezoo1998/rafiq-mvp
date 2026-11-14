@@ -3,6 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { triggerCelebrationConfetti, AnimatedCounter, StaggerContainer, StaggerItem, HoverSpring } from "@/components/ui/motion";
 import {
   MessageSquare,
   ArrowRight,
@@ -60,8 +62,11 @@ export default function HomePage() {
 
       const data = await res.json();
       if (res.ok) {
-        router.push(data.redirectTo || "/missions");
-        router.refresh();
+        triggerCelebrationConfetti();
+        setTimeout(() => {
+          router.push(data.redirectTo || "/missions");
+          router.refresh();
+        }, 350);
       } else {
         alert(data.error?.message || "Could not log in with demo code. Please verify database connection.");
         setLoggingInRole(null);
@@ -197,6 +202,9 @@ export default function HomePage() {
     setTimeout(() => {
       setChatSteps(targetStep);
       setIsTyping(false);
+      if (targetStep >= currentScenario.dialogue.length) {
+        triggerCelebrationConfetti();
+      }
     }, 400);
   };
 

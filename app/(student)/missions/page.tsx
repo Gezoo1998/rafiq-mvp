@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LevelChip } from "@/components/ui/level-chip";
+import { AnimatedCounter, StaggerContainer, StaggerItem, HoverSpring } from "@/components/ui/motion";
 import {
   Calculator,
   FlaskConical,
@@ -64,8 +66,8 @@ export default function StudentMissionsPage() {
       arabic: "رياضيات",
       icon: Calculator,
       gradient: "from-indigo-600 to-purple-600",
-      bgLight: "bg-indigo-50/70 dark:bg-indigo-950/30",
-      textColor: "text-indigo-600 dark:text-indigo-400",
+      bgLight: "bg-indigo-50/80",
+      textColor: "text-indigo-600",
       borderColor: "border-l-indigo-600",
       shadow: "shadow-indigo-500/10",
     },
@@ -74,8 +76,8 @@ export default function StudentMissionsPage() {
       arabic: "علوم",
       icon: FlaskConical,
       gradient: "from-emerald-600 to-teal-600",
-      bgLight: "bg-emerald-50/70 dark:bg-emerald-950/30",
-      textColor: "text-emerald-600 dark:text-emerald-400",
+      bgLight: "bg-emerald-50/80",
+      textColor: "text-emerald-600",
       borderColor: "border-l-emerald-600",
       shadow: "shadow-emerald-500/10",
     },
@@ -84,8 +86,8 @@ export default function StudentMissionsPage() {
       arabic: "لغة إنجليزية",
       icon: BookOpen,
       gradient: "from-rose-600 to-pink-600",
-      bgLight: "bg-rose-50/70 dark:bg-rose-950/30",
-      textColor: "text-rose-600 dark:text-rose-400",
+      bgLight: "bg-rose-50/80",
+      textColor: "text-rose-600",
       borderColor: "border-l-rose-600",
       shadow: "shadow-rose-500/10",
     },
@@ -95,57 +97,77 @@ export default function StudentMissionsPage() {
   const completedList = missions.filter((m) => m.assignmentStatus === "completed");
 
   return (
-    <div className="space-y-8">
-      {/* Motivational Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-indigo-600 via-primary-600 to-purple-700 p-6 sm:p-8 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-extrabold uppercase tracking-wider">
+    <div className="space-y-8 pb-12">
+      {/* Motivational Banner with animated floating gradient */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="rounded-3xl bg-gradient-to-r from-indigo-600 via-primary-600 to-purple-700 p-6 sm:p-8 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden"
+      >
+        <motion.div
+          animate={{ x: [0, 20, 0], y: [0, -15, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"
+        />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-lg">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-extrabold uppercase tracking-wider backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5 text-amber-300" />
               <span>Socratic AI Study Companion</span>
             </span>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               My Learning Missions
             </h1>
-            <p className="text-sm text-indigo-100 max-w-md">
-              Step-by-step Socratic practice. Work with Rafiq to master tough concepts without pressure!
+            <p className="text-sm text-indigo-100 leading-relaxed">
+              Step-by-step interactive practice. Talk with Rafiq to conquer challenging concepts at your own speed!
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl text-center border border-white/20">
-              <div className="text-2xl font-black">{dueSoonList.length}</div>
-              <div className="text-[11px] font-bold text-indigo-100 uppercase tracking-wider">To Do</div>
-            </div>
-            <div className="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl text-center border border-white/20">
-              <div className="text-2xl font-black text-emerald-300">{completedList.length}</div>
-              <div className="text-[11px] font-bold text-indigo-100 uppercase tracking-wider">Mastered</div>
-            </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/15 backdrop-blur-md px-5 py-3.5 rounded-2xl text-center border border-white/20 shadow-xs"
+            >
+              <div className="text-3xl font-black">
+                <AnimatedCounter value={dueSoonList.length} />
+              </div>
+              <div className="text-[11px] font-bold text-indigo-100 uppercase tracking-wider mt-0.5">To Do</div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/15 backdrop-blur-md px-5 py-3.5 rounded-2xl text-center border border-white/20 shadow-xs"
+            >
+              <div className="text-3xl font-black text-emerald-300">
+                <AnimatedCounter value={completedList.length} />
+              </div>
+              <div className="text-[11px] font-bold text-indigo-100 uppercase tracking-wider mt-0.5">Mastered</div>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-32 bg-neutral-200/60 dark:bg-neutral-800 rounded-2xl" />
-          <div className="h-32 bg-neutral-200/60 dark:bg-neutral-800 rounded-2xl" />
+          <div className="h-32 bg-neutral-200/60 rounded-3xl" />
+          <div className="h-32 bg-neutral-200/60 rounded-3xl" />
         </div>
       ) : missions.length === 0 ? (
-        <Card className="text-center py-16 rounded-3xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
-          <div className="h-16 w-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4 shadow-sm">
+        <Card className="text-center py-16 rounded-3xl border-2 border-dashed border-neutral-200 bg-white">
+          <div className="h-16 w-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-sm">
             <Sparkles className="h-8 w-8" />
           </div>
-          <CardTitle className="text-xl font-black text-navy-900 dark:text-white">All caught up!</CardTitle>
+          <CardTitle className="text-xl font-black text-navy-900">All caught up!</CardTitle>
           <CardDescription className="max-w-xs mx-auto mt-2 text-neutral-500">
-            You don't have any pending missions. Check back soon when your teacher assigns the next challenge!
+            You don&apos;t have any pending missions. Check back soon when your teacher assigns the next challenge!
           </CardDescription>
         </Card>
       ) : (
         <div className="space-y-8">
           {/* Active / Due Soon */}
           {dueSoonList.length > 0 && (
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xs font-black uppercase tracking-wider text-neutral-500 flex items-center gap-2">
                   <Zap className="h-4 w-4 text-amber-500" />
@@ -153,7 +175,7 @@ export default function StudentMissionsPage() {
                 </h2>
               </div>
 
-              <div className="space-y-3">
+              <StaggerContainer className="space-y-3.5">
                 {dueSoonList.map((item) => {
                   const subj = subjectConfig[item.subject] || subjectConfig.math;
                   const Icon = subj.icon;
@@ -161,112 +183,118 @@ export default function StudentMissionsPage() {
                   const isOverdue = relativeDue.includes("Overdue");
 
                   return (
-                    <div
-                      key={item.assignmentId}
-                      className={`rounded-2xl border border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-neutral-900 border-l-4 ${subj.borderColor} p-5 hover:shadow-lg transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
-                    >
-                      <div className="space-y-2 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className={`inline-flex items-center gap-1.5 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${subj.bgLight} ${subj.textColor}`}>
-                            <Icon className="h-3.5 w-3.5" />
-                            <span>{subj.label}</span>
-                          </span>
-                          <span className="text-neutral-300 dark:text-neutral-700">•</span>
-                          <span className="text-xs font-bold text-neutral-500">
-                            Grade {item.grade} ({item.curriculum})
-                          </span>
-                          <span className="text-neutral-300 dark:text-neutral-700">•</span>
-                          <span
-                            className={`text-xs font-bold flex items-center gap-1 ${
-                              isOverdue ? "text-rose-600 dark:text-rose-400 font-black" : "text-neutral-500"
-                            }`}
-                          >
-                            <Clock className="h-3.5 w-3.5" />
-                            <span>{relativeDue || `Due ${formatDateTime(item.dueAt)}`}</span>
-                          </span>
+                    <StaggerItem key={item.assignmentId}>
+                      <HoverSpring scale={1.01} y={-3}>
+                        <div
+                          className={`rounded-3xl border border-neutral-200/90 bg-white border-l-4 ${subj.borderColor} p-5 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
+                        >
+                          <div className="space-y-2 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className={`inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1 rounded-full ${subj.bgLight} ${subj.textColor}`}>
+                                <Icon className="h-3.5 w-3.5" />
+                                <span>{subj.label}</span>
+                              </span>
+                              <span className="text-neutral-300">•</span>
+                              <span className="text-xs font-bold text-neutral-500">
+                                Grade {item.grade} ({item.curriculum})
+                              </span>
+                              <span className="text-neutral-300">•</span>
+                              <span
+                                className={`text-xs font-bold flex items-center gap-1 ${
+                                  isOverdue ? "text-rose-600 font-black" : "text-neutral-500"
+                                }`}
+                              >
+                                <Clock className="h-3.5 w-3.5" />
+                                <span>{relativeDue || `Due ${formatDateTime(item.dueAt)}`}</span>
+                              </span>
+                            </div>
+
+                            <h3 className="text-lg font-black text-navy-900 group-hover:text-primary-600 transition-colors">
+                              {item.title}
+                            </h3>
+
+                            {item.instructions && (
+                              <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed">
+                                {item.instructions}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="shrink-0 flex items-center gap-3">
+                            <Button asChild variant="primary" size="md" className={`shrink-0 font-bold gap-2 rounded-xl shadow-md bg-gradient-to-r ${subj.gradient}`}>
+                              <Link href={`/missions/${item.assignmentId}`}>
+                                <span>{item.assignmentStatus === "in_progress" ? "Resume Mission" : "Start Mission"}</span>
+                                <ArrowRight className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
                         </div>
-
-                        <h3 className="text-lg font-black text-navy-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                          {item.title}
-                        </h3>
-
-                        {item.instructions && (
-                          <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-relaxed">
-                            {item.instructions}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="shrink-0 flex items-center gap-3">
-                        <Button asChild variant="primary" size="md" className={`shrink-0 font-bold gap-2 shadow-md bg-gradient-to-r ${subj.gradient}`}>
-                          <Link href={`/missions/${item.assignmentId}`}>
-                            <span>{item.assignmentStatus === "in_progress" ? "Resume Mission" : "Start Mission"}</span>
-                            <ArrowRight className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
+                      </HoverSpring>
+                    </StaggerItem>
                   );
                 })}
-              </div>
+              </StaggerContainer>
             </div>
           )}
 
           {/* Completed Missions */}
           {completedList.length > 0 && (
-            <div className="space-y-3.5 pt-4">
+            <div className="space-y-4 pt-2">
               <h2 className="text-xs font-black uppercase tracking-wider text-neutral-500 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                 <span>Completed Missions ({completedList.length})</span>
               </h2>
 
-              <div className="space-y-3">
+              <StaggerContainer className="space-y-3.5">
                 {completedList.map((item) => {
                   const subj = subjectConfig[item.subject] || subjectConfig.math;
                   const Icon = subj.icon;
 
                   return (
-                    <div
-                      key={item.assignmentId}
-                      className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900/60 p-5 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                    >
-                      <div className="space-y-2 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full ${subj.bgLight} ${subj.textColor}`}>
-                            <Icon className="h-3.5 w-3.5" />
-                            <span>{subj.label}</span>
-                          </span>
-                          {item.evaluation?.level && (
-                            <LevelChip level={item.evaluation.level} size="sm" />
-                          )}
-                          <span className="text-neutral-300 dark:text-neutral-700">•</span>
-                          <span className="text-xs text-neutral-500 font-medium">
-                            Completed {formatDateTime(item.completedAt)}
-                          </span>
+                    <StaggerItem key={item.assignmentId}>
+                      <HoverSpring scale={1.01} y={-2}>
+                        <div
+                          className="rounded-3xl border border-neutral-200/80 bg-neutral-50/70 p-5 sm:p-6 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                        >
+                          <div className="space-y-2 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${subj.bgLight} ${subj.textColor}`}>
+                                <Icon className="h-3.5 w-3.5" />
+                                <span>{subj.label}</span>
+                              </span>
+                              {item.evaluation?.level && (
+                                <LevelChip level={item.evaluation.level} size="sm" />
+                              )}
+                              <span className="text-neutral-300">•</span>
+                              <span className="text-xs text-neutral-500 font-medium">
+                                Completed {formatDateTime(item.completedAt)}
+                              </span>
+                            </div>
+
+                            <h3 className="text-base font-black text-navy-900">
+                              {item.title}
+                            </h3>
+
+                            {item.evaluation?.studentSummary && (
+                              <p className="text-xs text-neutral-600 bg-white p-3.5 rounded-2xl border border-neutral-200/80 leading-relaxed">
+                                <strong>Feedback:</strong> {item.evaluation.studentSummary}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="shrink-0">
+                            <Button asChild variant="secondary" size="sm" className="font-bold text-xs rounded-xl">
+                              <Link href={`/missions/${item.assignmentId}`}>
+                                Review Dialogue
+                              </Link>
+                            </Button>
+                          </div>
                         </div>
-
-                        <h3 className="text-base font-black text-navy-900 dark:text-white">
-                          {item.title}
-                        </h3>
-
-                        {item.evaluation?.studentSummary && (
-                          <p className="text-xs text-neutral-600 dark:text-neutral-400 bg-white dark:bg-neutral-850 p-3 rounded-xl border border-neutral-200/80 dark:border-neutral-800">
-                            <strong>Feedback:</strong> {item.evaluation.studentSummary}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="shrink-0">
-                        <Button asChild variant="secondary" size="sm" className="font-bold text-xs">
-                          <Link href={`/missions/${item.assignmentId}`}>
-                            Review Dialogue
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
+                      </HoverSpring>
+                    </StaggerItem>
                   );
                 })}
-              </div>
+              </StaggerContainer>
             </div>
           )}
         </div>

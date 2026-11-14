@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedCounter, StaggerContainer, StaggerItem, HoverSpring, triggerCelebrationConfetti } from "@/components/ui/motion";
 import {
   BookOpen,
   Plus,
@@ -64,7 +66,10 @@ export default function TeacherMissionsPage() {
   const handlePublish = async (id: string) => {
     try {
       const res = await fetch(`/api/missions/${id}/publish`, { method: "POST" });
-      if (res.ok) fetchMissions();
+      if (res.ok) {
+        triggerCelebrationConfetti();
+        fetchMissions();
+      }
     } catch {
       // ignore
     }
@@ -102,17 +107,17 @@ export default function TeacherMissionsPage() {
     math: {
       label: "Math",
       icon: Calculator,
-      className: "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
+      className: "bg-indigo-50 text-indigo-700 border-indigo-200",
     },
     science: {
       label: "Science",
       icon: FlaskConical,
-      className: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
     english: {
       label: "English",
       icon: BookOpen,
-      className: "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800",
+      className: "bg-rose-50 text-rose-700 border-rose-200",
     },
   };
 
@@ -121,74 +126,100 @@ export default function TeacherMissionsPage() {
   const closedCount = missions.filter((m) => m.status === "closed").length;
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-8 pb-12">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-navy-900 dark:text-white tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight flex items-center gap-2.5">
             <span>Missions Mission Control</span>
-            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">
-              Teacher
+            <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">
+              Teacher Faculty
             </span>
           </h1>
           <p className="text-sm text-neutral-500 mt-1">
-            Create interactive Socratic missions, assign target classes, and inspect live student mastery
+            Author interactive Socratic missions, assign target class cohorts, and inspect live mastery telemetry
           </p>
         </div>
 
-        <Button asChild variant="primary" className="gap-2 shrink-0 shadow-md shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-primary-600 font-bold">
-          <Link href="/teacher/new">
-            <Plus className="h-4 w-4" />
-            <span>New Mission</span>
-          </Link>
-        </Button>
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+          <Button asChild variant="primary" className="gap-2 shrink-0 shadow-md shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-primary-600 font-bold rounded-xl px-5 h-11">
+            <Link href="/teacher/new">
+              <Plus className="h-4 w-4" />
+              <span>New Mission</span>
+            </Link>
+          </Button>
+        </motion.div>
       </div>
 
       {/* KPI Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-neutral-900 p-4.5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center shrink-0">
+        <motion.div
+          whileHover={{ y: -3, scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="bg-white p-5 rounded-3xl border border-neutral-200/80 shadow-xs flex items-center gap-4"
+        >
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
             <BookOpen className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xl font-black text-navy-900 dark:text-white">{missions.length}</div>
+            <div className="text-2xl font-black text-navy-900">
+              <AnimatedCounter value={missions.length} />
+            </div>
             <div className="text-xs text-neutral-500 font-semibold">Total Missions</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-neutral-900 p-4.5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center shrink-0">
+        <motion.div
+          whileHover={{ y: -3, scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="bg-white p-5 rounded-3xl border border-neutral-200/80 shadow-xs flex items-center gap-4"
+        >
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xl font-black text-emerald-600">{publishedCount}</div>
+            <div className="text-2xl font-black text-emerald-600">
+              <AnimatedCounter value={publishedCount} />
+            </div>
             <div className="text-xs text-neutral-500 font-semibold">Published Active</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-neutral-900 p-4.5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center shrink-0">
+        <motion.div
+          whileHover={{ y: -3, scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="bg-white p-5 rounded-3xl border border-neutral-200/80 shadow-xs flex items-center gap-4"
+        >
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
             <Clock className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xl font-black text-amber-600">{draftCount}</div>
+            <div className="text-2xl font-black text-amber-600">
+              <AnimatedCounter value={draftCount} />
+            </div>
             <div className="text-xs text-neutral-500 font-semibold">Draft Missions</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-neutral-900 p-4.5 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center shrink-0">
+        <motion.div
+          whileHover={{ y: -3, scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="bg-white p-5 rounded-3xl border border-neutral-200/80 shadow-xs flex items-center gap-4"
+        >
+          <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
             <BarChart2 className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xl font-black text-purple-600">{closedCount}</div>
+            <div className="text-2xl font-black text-purple-600">
+              <AnimatedCounter value={closedCount} />
+            </div>
             <div className="text-xs text-neutral-500 font-semibold">Completed & Closed</div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-neutral-200 dark:border-neutral-800 pb-3 text-xs">
+      {/* Filter Tabs with animated pills */}
+      <div className="flex items-center gap-2 border-b border-neutral-200 pb-3 text-xs">
         {[
           { id: "all", label: "All Missions", count: missions.length },
           { id: "published", label: "Published", count: publishedCount },
@@ -198,14 +229,14 @@ export default function TeacherMissionsPage() {
           <button
             key={tab.id}
             onClick={() => setFilterStatus(tab.id)}
-            className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 relative ${
               filterStatus === tab.id
-                ? "bg-indigo-600 text-white shadow-xs"
-                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                ? "bg-indigo-600 text-white shadow-sm"
+                : "text-neutral-600 hover:bg-neutral-100"
             }`}
           >
             <span>{tab.label}</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${filterStatus === tab.id ? "bg-white/20 text-white" : "bg-neutral-200 dark:bg-neutral-700"}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full ${filterStatus === tab.id ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-600"}`}>
               {tab.count}
             </span>
           </button>
@@ -214,20 +245,20 @@ export default function TeacherMissionsPage() {
 
       {/* Missions List */}
       {loading ? (
-        <div className="space-y-3 animate-pulse">
-          <div className="h-28 bg-neutral-200/50 dark:bg-neutral-800 rounded-2xl" />
-          <div className="h-28 bg-neutral-200/50 dark:bg-neutral-800 rounded-2xl" />
+        <div className="space-y-3.5 animate-pulse">
+          <div className="h-28 bg-neutral-200/60 rounded-3xl" />
+          <div className="h-28 bg-neutral-200/60 rounded-3xl" />
         </div>
       ) : missions.length === 0 ? (
-        <Card className="text-center py-16 rounded-3xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
-          <div className="h-16 w-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
+        <Card className="text-center py-16 rounded-3xl border-2 border-dashed border-neutral-200 bg-white">
+          <div className="h-16 w-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
             <BookOpen className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-black text-navy-900 dark:text-white">No missions found</h3>
+          <h3 className="text-lg font-black text-navy-900">No missions found</h3>
           <p className="text-xs sm:text-sm text-neutral-500 mb-5 max-w-sm mx-auto">
-            Get started by creating a 60-second interactive learning mission for your classes.
+            Get started by creating an interactive Socratic learning mission for your classes.
           </p>
-          <Button asChild variant="primary" className="font-bold bg-gradient-to-r from-indigo-600 to-primary-600">
+          <Button asChild variant="primary" className="font-bold bg-gradient-to-r from-indigo-600 to-primary-600 rounded-xl px-6">
             <Link href="/teacher/new">
               <Plus className="h-4 w-4 mr-1.5" />
               <span>Create First Mission</span>
@@ -235,7 +266,7 @@ export default function TeacherMissionsPage() {
           </Button>
         </Card>
       ) : (
-        <div className="space-y-3.5">
+        <StaggerContainer className="space-y-3.5">
           {missions.map((m) => {
             const relativeDue = getRelativeTimeString(m.dueAt);
             const isOverdue = relativeDue.includes("Overdue");
@@ -243,123 +274,123 @@ export default function TeacherMissionsPage() {
             const SubjIcon = subj.icon;
 
             return (
-              <div
-                key={m.id}
-                className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
-              >
-                <div className="space-y-2 flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className={`inline-flex items-center gap-1.5 text-2xs font-extrabold uppercase px-2.5 py-0.5 rounded-full border ${subj.className}`}>
-                      <SubjIcon className="h-3 w-3" />
-                      <span>{subj.label}</span>
-                    </span>
-                    <span className="text-xs font-bold text-neutral-500">
-                      Grade {m.grade} ({m.curriculum})
-                    </span>
-                    <span className="text-neutral-300 dark:text-neutral-700">•</span>
-                    <span className="text-xs text-neutral-500 font-semibold uppercase">
-                      Lang: {m.languageMode}
-                    </span>
-                    <span className="text-neutral-300 dark:text-neutral-700">•</span>
-                    <span
-                      className={`text-xs font-bold flex items-center gap-1 ${
-                        isOverdue && m.status === "published"
-                          ? "text-rose-600 dark:text-rose-400 font-black"
-                          : "text-neutral-500"
-                      }`}
-                    >
-                      <Clock className="h-3 w-3" />
-                      <span>{relativeDue || `Due ${formatDateTime(m.dueAt)}`}</span>
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-black text-navy-900 dark:text-white truncate">
-                    {m.title}
-                  </h3>
-
-                  {m.instructions && (
-                    <p className="text-xs text-neutral-500 line-clamp-1">{m.instructions}</p>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-                  <Badge
-                    variant={
-                      m.status === "published"
-                        ? "success"
-                        : m.status === "closed"
-                        ? "default"
-                        : "warning"
-                    }
-                    className="capitalize font-bold text-xs"
+              <StaggerItem key={m.id}>
+                <HoverSpring scale={1.01} y={-2}>
+                  <div
+                    className="rounded-3xl border border-neutral-200/80 bg-white p-5 sm:p-6 shadow-xs hover:shadow-lg hover:border-indigo-300 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
                   >
-                    {m.status}
-                  </Badge>
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border ${subj.className}`}>
+                          <SubjIcon className="h-3.5 w-3.5" />
+                          <span>{subj.label}</span>
+                        </span>
+                        <span className="text-neutral-300">•</span>
+                        <span className="text-xs font-bold text-neutral-500">
+                          Grade {m.grade} ({m.curriculum})
+                        </span>
+                        <span className="text-neutral-300">•</span>
+                        <span
+                          className={`text-xs font-bold flex items-center gap-1 ${
+                            isOverdue ? "text-rose-600 font-black" : "text-neutral-500"
+                          }`}
+                        >
+                          <Clock className="h-3.5 w-3.5" />
+                          <span>{relativeDue || `Due ${formatDateTime(m.dueAt)}`}</span>
+                        </span>
+                        <Badge
+                          variant={
+                            m.status === "published"
+                              ? "success"
+                              : m.status === "closed"
+                              ? "default"
+                              : "warning"
+                          }
+                          className="capitalize text-2xs px-2.5 py-0.5 font-bold"
+                        >
+                          {m.status}
+                        </Badge>
+                      </div>
 
-                  {m.status === "published" && (
-                    <>
-                      <Button asChild variant="primary" size="sm" className="gap-1.5 font-bold shadow-xs bg-indigo-600 hover:bg-indigo-700">
-                        <Link href={`/teacher/missions/${m.id}`}>
-                          <BarChart2 className="h-3.5 w-3.5" />
-                          <span>Results</span>
-                        </Link>
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleClose(m.id)}
-                        className="text-xs font-bold"
-                      >
-                        Close
-                      </Button>
-                    </>
-                  )}
+                      <h3 className="text-lg font-black text-navy-900 truncate">
+                        {m.title}
+                      </h3>
 
-                  {m.status === "closed" && (
-                    <>
-                      <Button asChild variant="primary" size="sm" className="gap-1.5 font-bold bg-indigo-600 hover:bg-indigo-700">
-                        <Link href={`/teacher/missions/${m.id}`}>
-                          <BarChart2 className="h-3.5 w-3.5" />
-                          <span>Results</span>
-                        </Link>
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleReopen(m.id)}
-                        className="text-xs font-bold"
-                      >
-                        Reopen
-                      </Button>
-                    </>
-                  )}
+                      {m.instructions && (
+                        <p className="text-xs text-neutral-500 line-clamp-1">
+                          {m.instructions}
+                        </p>
+                      )}
+                    </div>
 
-                  {m.status === "draft" && (
-                    <>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handlePublish(m.id)}
-                        className="gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700"
-                      >
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        <span>Publish</span>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(m.id)}
-                        className="text-neutral-400 hover:text-rose-600 p-1"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
+                    <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
+                      {m.status === "draft" && (
+                        <>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => handlePublish(m.id)}
+                            className="gap-1.5 text-xs font-bold rounded-xl text-emerald-700 hover:bg-emerald-50 border-emerald-200"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
+                            <span>Publish</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(m.id)}
+                            className="h-8 w-8 p-0 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl"
+                            title="Delete draft"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      )}
+
+                      {m.status === "published" && (
+                        <>
+                          <Button asChild variant="primary" size="sm" className="gap-1.5 text-xs font-bold rounded-xl">
+                            <Link href={`/teacher/missions/${m.id}`}>
+                              <BarChart2 className="h-3.5 w-3.5" />
+                              <span>Analytics</span>
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleClose(m.id)}
+                            className="text-xs text-neutral-500 hover:text-navy-900 rounded-xl"
+                          >
+                            Close
+                          </Button>
+                        </>
+                      )}
+
+                      {m.status === "closed" && (
+                        <>
+                          <Button asChild variant="secondary" size="sm" className="gap-1.5 text-xs font-bold rounded-xl">
+                            <Link href={`/teacher/missions/${m.id}`}>
+                              <FileText className="h-3.5 w-3.5 text-primary-600" />
+                              <span>Final Results</span>
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleReopen(m.id)}
+                            className="text-xs text-neutral-500 hover:text-navy-900 rounded-xl"
+                          >
+                            Reopen
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </HoverSpring>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       )}
     </div>
   );

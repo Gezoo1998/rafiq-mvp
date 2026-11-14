@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageSquare,
   BookOpen,
@@ -97,25 +98,27 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
   }[user.role];
 
   const initials = user.fullName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+    ? user.fullName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "ST";
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
+    <div className="min-h-screen flex flex-col md:flex-row bg-neutral-50 text-neutral-900">
       {/* Mobile Top Header */}
-      <div className="md:hidden flex items-center justify-between h-16 px-4 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="md:hidden flex items-center justify-between h-16 px-4 bg-white border-b border-neutral-200">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex items-center justify-center h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-primary-600 text-white shadow-xs">
             <MessageSquare className="h-4 w-4" />
           </div>
-          <span className="font-black text-navy-900 dark:text-white">Rafiq • رفيق</span>
+          <span className="font-black text-navy-900">Rafiq • رفيق</span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white focus:outline-none"
+          className="p-2 text-neutral-600 hover:text-neutral-900 focus:outline-none"
           aria-label="Toggle Navigation"
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -125,20 +128,20 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
       {/* Sidebar (Desktop 256px, Mobile drawer) */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-neutral-900 border-r border-neutral-200/90 dark:border-neutral-800 flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-[256px] shrink-0",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-200/90 flex flex-col transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:w-[256px] shrink-0",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Brand */}
-        <div className="p-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white shadow-md shadow-indigo-500/20">
+        <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
               <MessageSquare className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-black text-navy-900 dark:text-white text-lg tracking-tight">Rafiq</span>
-                <span className="font-bold text-primary-600 dark:text-primary-400 text-xs" dir="rtl">رفيق</span>
+                <span className="font-black text-navy-900 text-lg tracking-tight">Rafiq</span>
+                <span className="font-bold text-primary-600 text-xs" dir="rtl">رفيق</span>
               </div>
               <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block -mt-0.5">
                 Portal Workspace
@@ -154,8 +157,8 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
         </div>
 
         {/* School context tag */}
-        <div className="px-5 py-3.5 bg-neutral-50/80 dark:bg-neutral-850/60 border-b border-neutral-100 dark:border-neutral-800 text-xs">
-          <div className="font-bold text-navy-900 dark:text-white truncate">
+        <div className="px-5 py-3.5 bg-neutral-50/80 border-b border-neutral-100 text-xs">
+          <div className="font-bold text-navy-900 truncate">
             {user.schoolName || (user.role === "system_admin" ? "Platform Control" : "School Workspace")}
           </div>
           <div className="flex items-center gap-1.5 mt-1">
@@ -183,10 +186,10 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all",
+                  "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all relative",
                   isActive
                     ? "bg-gradient-to-r from-indigo-600 to-primary-600 text-white shadow-md shadow-indigo-500/20 font-extrabold"
-                    : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                    : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
                 )}
               >
                 <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-white" : "text-neutral-400")} />
@@ -197,7 +200,7 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
         </nav>
 
         {/* Footer with user info & logout */}
-        <div className="p-4 border-t border-neutral-200/80 dark:border-neutral-800 space-y-3 bg-white dark:bg-neutral-900">
+        <div className="p-4 border-t border-neutral-200/80 space-y-3 bg-white">
           {isMockAi && <DemoBadge className="w-full justify-center" />}
 
           <div className="flex items-center justify-between pt-1">
@@ -206,7 +209,7 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
                 {initials}
               </div>
               <div className="truncate">
-                <p className="text-xs font-bold text-neutral-900 dark:text-white truncate">{user.fullName}</p>
+                <p className="text-xs font-bold text-neutral-900 truncate">{user.fullName}</p>
                 <p className="text-[10px] text-neutral-500 capitalize">{user.role.replace("_", " ")}</p>
               </div>
             </div>
@@ -217,7 +220,7 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
               onClick={handleLogout}
               isLoading={loggingOut}
               aria-label="Log out"
-              className="text-neutral-400 hover:text-rose-600 h-8 w-8 p-0"
+              className="text-neutral-400 hover:text-rose-600 hover:bg-rose-50 h-8 w-8 p-0 rounded-lg"
               title="Log out"
             >
               <LogOut className="h-4 w-4" />
@@ -229,9 +232,9 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top desktop bar */}
-        <header className="hidden md:flex items-center justify-between h-16 px-8 border-b border-neutral-200/80 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md">
+        <header className="hidden md:flex items-center justify-between h-16 px-8 border-b border-neutral-200/80 bg-white/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <h2 className="text-sm font-bold text-navy-900 dark:text-white">
+            <h2 className="text-sm font-bold text-navy-900">
               {user.schoolName || (user.role === "system_admin" ? "System Administration" : "Rafiq Workspace")}
             </h2>
             <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border ${roleConfig.badgeClass}`}>
@@ -242,14 +245,19 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
           <div className="flex items-center gap-3">
             {isMockAi && <DemoBadge />}
             <span className="text-xs text-neutral-500">
-              Signed in as <strong className="text-neutral-900 dark:text-white font-bold">{user.fullName}</strong>
+              Signed in as <strong className="text-navy-900 font-bold">{user.fullName}</strong>
             </span>
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1240px] w-full mx-auto">
+        <motion.main
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1240px] w-full mx-auto"
+        >
           {children}
-        </main>
+        </motion.main>
       </div>
     </div>
   );
