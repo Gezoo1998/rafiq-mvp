@@ -63,7 +63,7 @@ export function CodeInput({
 
   return (
     <div className="w-full space-y-2">
-      <div className="relative">
+      <div className="relative group">
         <input
           ref={inputRef}
           type="text"
@@ -80,18 +80,18 @@ export function CodeInput({
           aria-label="Access Code"
           aria-invalid={!!error}
           className={cn(
-            "h-14 w-full rounded-lg border-2 border-neutral-200 bg-surface px-4 text-center font-mono text-xl md:text-2xl font-bold tracking-widest text-navy-900 placeholder:text-neutral-400 placeholder:font-normal placeholder:tracking-normal focus-visible:outline-none focus-visible:border-primary-600 focus-visible:ring-4 focus-visible:ring-primary-100 disabled:opacity-50 transition-all",
-            error && "border-semantic-danger focus-visible:border-semantic-danger focus-visible:ring-red-100 animate-[shake_0.4s_ease-in-out]",
+            "h-14 w-full rounded-2xl border-2 border-neutral-200/90 bg-white dark:bg-neutral-900 px-4 text-center font-mono text-xl sm:text-2xl font-black tracking-widest text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-600 placeholder:font-normal placeholder:tracking-normal shadow-xs transition-all duration-200 focus-visible:outline-none focus-visible:border-indigo-600 focus-visible:ring-4 focus-visible:ring-indigo-500/15 disabled:opacity-50",
+            error && "border-rose-500 focus-visible:border-rose-500 focus-visible:ring-rose-500/15 animate-[shake_0.4s_ease-in-out]",
             className
           )}
         />
       </div>
       {error && (
-        <p className="text-sm font-medium text-semantic-danger text-center" role="alert">
+        <p className="text-xs font-bold text-rose-500 text-center flex items-center justify-center gap-1.5" role="alert">
+          <span className="h-1.5 w-1.5 rounded-full bg-rose-500 inline-block" />
           {error}
         </p>
       )}
     </div>
   );
 }
-

@@ -3,26 +3,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300",
+  "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-bold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-300",
   {
     variants: {
       variant: {
         default:
-          "bg-neutral-100 text-neutral-800 border border-neutral-200",
+          "bg-neutral-100 text-neutral-800 border border-neutral-200/80 shadow-2xs",
         secondary:
-          "bg-neutral-100/80 text-neutral-700 border border-neutral-200/80",
+          "bg-neutral-100/90 text-neutral-700 border border-neutral-200/90 shadow-2xs",
         primary:
-          "bg-primary-50 text-primary-700 border border-primary-100",
+          "bg-primary-50 text-primary-700 border border-primary-200/70 shadow-2xs",
         success:
-          "bg-semantic-success-bg text-semantic-success",
+          "bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs",
         warning:
-          "bg-semantic-warning-bg text-semantic-warning",
+          "bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs",
         danger:
-          "bg-semantic-danger-bg text-semantic-danger font-semibold",
+          "bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs",
         info:
-          "bg-semantic-info-bg text-semantic-info",
+          "bg-sky-50 text-sky-700 border border-sky-200 shadow-2xs",
         outline:
-          "border border-neutral-300 text-neutral-700",
+          "border border-neutral-300/80 text-neutral-700 bg-white shadow-2xs",
       },
     },
     defaultVariants: {
