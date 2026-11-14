@@ -22,23 +22,31 @@ export function LevelChip({ level, className, size = "md" }: LevelChipProps) {
   const config = {
     mastered: {
       label: "Mastered it!",
+      arabic: "متقن بامتياز",
       icon: Sparkles,
-      className: "bg-[#E6F4EC] text-[#1E7B4B] border-[#C2E8D2]",
+      className: "bg-gradient-to-r from-emerald-500/15 to-teal-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300/60 dark:border-emerald-700/60",
+      dotClass: "bg-emerald-500 shadow-sm shadow-emerald-500/50",
     },
     proficient: {
-      label: "Getting strong",
+      label: "Getting Strong",
+      arabic: "متمكن",
       icon: TrendingUp,
-      className: "bg-[#E6F0FB] text-[#1F63B5] border-[#BDDCF8]",
+      className: "bg-gradient-to-r from-sky-500/15 to-blue-500/15 text-sky-700 dark:text-sky-300 border-sky-300/60 dark:border-sky-700/60",
+      dotClass: "bg-sky-500 shadow-sm shadow-sky-500/50",
     },
     developing: {
-      label: "Making progress",
+      label: "Making Progress",
+      arabic: "في تقدم",
       icon: Sprout,
-      className: "bg-[#FDF1DC] text-[#A86412] border-[#FCE1B6]",
+      className: "bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-700 dark:text-amber-300 border-amber-300/60 dark:border-amber-700/60",
+      dotClass: "bg-amber-500 shadow-sm shadow-amber-500/50",
     },
     needs_support: {
-      label: "Needs more practice",
+      label: "Needs Practice",
+      arabic: "بحاجة لتدريب",
       icon: LifeBuoy,
-      className: "bg-[#FBEBE2] text-[#B5532A] border-[#F6D0BC]",
+      className: "bg-gradient-to-r from-rose-500/15 to-pink-500/15 text-rose-700 dark:text-rose-300 border-rose-300/60 dark:border-rose-700/60",
+      dotClass: "bg-rose-500 shadow-sm shadow-rose-500/50",
     },
   }[level];
 
@@ -47,12 +55,13 @@ export function LevelChip({ level, className, size = "md" }: LevelChipProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center font-medium rounded-full border shadow-2xs",
-        size === "sm" ? "px-2 py-0.5 text-xs gap-1" : "px-3 py-1 text-xs md:text-sm gap-1.5",
+        "inline-flex items-center font-bold rounded-full border shadow-xs transition-all",
+        size === "sm" ? "px-2.5 py-0.5 text-2xs gap-1.5" : "px-3.5 py-1 text-xs gap-2",
         config.className,
         className
       )}
     >
+      <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", config.dotClass)} />
       <Icon className={cn(size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />
       <span>{config.label}</span>
     </span>
@@ -63,12 +72,12 @@ export function SafetyBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200",
+        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-500/15 to-rose-500/15 text-red-700 dark:text-red-300 border border-red-300/60 shadow-xs",
         className
       )}
     >
-      <ShieldAlert className="h-3.5 w-3.5" />
-      <span>Safety Alert</span>
+      <ShieldAlert className="h-3.5 w-3.5 text-red-600 animate-pulse" />
+      <span>Safety Flag Detected</span>
     </span>
   );
 }
@@ -77,13 +86,12 @@ export function DemoBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-2xs font-mono font-medium bg-amber-100 text-amber-800 border border-amber-300",
+        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-2xs font-mono font-bold bg-gradient-to-r from-indigo-500/15 to-purple-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800 shadow-2xs",
         className
       )}
     >
-      <Cpu className="h-3 w-3" />
-      <span>Demo AI</span>
+      <Cpu className="h-3 w-3 text-indigo-500" />
+      <span>Demo AI Engine</span>
     </span>
   );
 }
-

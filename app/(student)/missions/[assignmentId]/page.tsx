@@ -19,6 +19,9 @@ import {
   Loader2,
   AlertCircle,
   Lightbulb,
+  CheckCircle2,
+  Award,
+  Zap,
 } from "lucide-react";
 
 interface MessageItem {
@@ -99,27 +102,28 @@ export default function StudentSessionPage() {
     setInputText(e.target.value);
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 128)}px`;
     }
   };
 
-  const handleSendMessage = async (textToSend?: string) => {
-    const text = (textToSend || inputText).trim();
-    if (!text || isStreaming || !session?.id) return;
+  const handleSendMessage = async (customText?: string) => {
+    const textToSend = customText || inputText.trim();
+    if (!textToSend || isStreaming || !session?.id) return;
 
-    setInputText("");
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+    if (!customText) {
+      setInputText("");
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
     }
+
     setErrorBanner(null);
 
-    // Optimistically add user message
-    const tempUserMsg: MessageItem = {
+    // Optimistically add student message
+    const tempStudentMsg: MessageItem = {
       id: Date.now(),
       role: "user",
-      content: text,
+      content: textToSend,
     };
-    setMessages((prev) => [...prev, tempUserMsg]);
+    setMessages((prev) => [...prev, tempStudentMsg]);
     setIsStreaming(true);
     setStreamBuffer("");
 
@@ -127,76 +131,69 @@ export default function StudentSessionPage() {
       const response = await fetch(`/api/sessions/${session.id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: text }),
+        body: JSON.stringify({ content: textToSend }),
       });
 
       if (!response.ok) {
-        const errorJson = await response.json();
-        setErrorBanner(errorJson.error?.message || "Failed to get a response from Rafiq.");
+        const errData = await response.json().catch(() => ({}));
+        setErrorBanner(errData.error?.message || "Failed to send message");
         setIsStreaming(false);
         return;
       }
 
+      // Read SSE stream
       const reader = response.body?.getReader();
-      if (!reader) throw new Error("No reader available");
+      if (!reader) {
+        throw new Error("No readable stream received");
+      }
 
-      const decoder = new TextDecoder();
-      let accumulated = "";
-      let sessionFinished = false;
+      const decoder = new TextDecoder("utf-8");
+      let fullAssistantReply = "";
+      let buffer = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
-          if (line.startsWith("event: delta")) {
-            // Next line will be data
-          } else if (line.startsWith("event: done")) {
-            // Done event
-          } else if (line.startsWith("data: ")) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("data: ")) {
+            const jsonStr = trimmed.slice(6);
+            if (jsonStr === "[DONE]") continue;
+
             try {
-              const data = JSON.parse(line.slice(6));
-              if (data.text) {
-                accumulated += data.text;
-                setStreamBuffer(accumulated);
-              }
-              if (data.sessionComplete) {
-                sessionFinished = true;
+              const parsed = JSON.parse(jsonStr);
+              if (parsed.content) {
+                fullAssistantReply += parsed.content;
+                setStreamBuffer(fullAssistantReply);
               }
             } catch {
-              // ignore parse errors on partial chunks
+              // Ignore non-json lines
             }
           }
         }
       }
 
-      // Append assistant message once streaming completes
-      const cleaned = accumulated
-        .replace(/\[\[SESSION_COMPLETE\]\]/g, "")
-        .replace(/\[\[SAFETY_FLAG\]\]/g, "")
-        .trim();
-
-      const assistantMsg: MessageItem = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: cleaned,
-      };
-
-      setMessages((prev) => [...prev, assistantMsg]);
-      setStreamBuffer("");
-      setIsStreaming(false);
-
-      if (sessionFinished) {
-        // Automatically trigger evaluation if AI signalled session completion
-        handleFinishSession();
+      // Append assistant message to list and clear buffer
+      if (fullAssistantReply) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            role: "assistant",
+            content: fullAssistantReply,
+          },
+        ]);
       }
-    } catch (err: any) {
-      console.error(err);
-      setErrorBanner("Network interrupted. Your message was saved; try sending again.");
+    } catch {
+      setErrorBanner("Lost connection while streaming reply. Please try again.");
+    } finally {
       setIsStreaming(false);
+      setStreamBuffer("");
     }
   };
 
@@ -205,11 +202,6 @@ export default function StudentSessionPage() {
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  // "I'm stuck" quick hint action
-  const handleStuck = () => {
-    handleSendMessage("I'm stuck, can you give me a hint?");
   };
 
   const handleFinishSession = async () => {
@@ -243,42 +235,49 @@ export default function StudentSessionPage() {
 
   if (loading) {
     return (
-      <div className="h-[70vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-        <p className="text-sm text-neutral-600 font-medium">Connecting to Rafiq...</p>
+      <div className="h-[70vh] flex flex-col items-center justify-center space-y-4">
+        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 animate-pulse">
+          <Sparkles className="h-7 w-7 animate-spin" />
+        </div>
+        <p className="text-sm font-bold text-navy-900 dark:text-white">Connecting to Rafiq Socratic Tutor...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-[720px] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-[760px] mx-auto">
       {/* Top Session Navigation */}
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-200 shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
-          <Button asChild variant="ghost" size="sm" className="p-1 h-8 w-8">
+      <div className="flex items-center justify-between pb-3.5 border-b border-neutral-200/80 dark:border-neutral-800 shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <Button asChild variant="ghost" size="sm" className="p-2 h-9 w-9 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800">
             <Link href="/missions" aria-label="Back to missions">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
           <div className="min-w-0">
-            <h2 className="text-base font-bold text-navy-900 truncate">
+            <h2 className="text-base font-black text-navy-900 dark:text-white truncate">
               {mission?.title || "Tutoring Session"}
             </h2>
-            <p className="text-2xs text-neutral-500 capitalize">
-              {mission?.subject} • Grade {mission?.grade}
-            </p>
+            <div className="flex items-center gap-2 text-2xs font-bold text-neutral-500">
+              <span className="uppercase text-indigo-600 dark:text-indigo-400">{mission?.subject}</span>
+              <span>•</span>
+              <span>Grade {mission?.grade}</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse ml-1" />
+              <span className="text-emerald-600 dark:text-emerald-400">Live Session</span>
+            </div>
           </div>
         </div>
 
         {!isCompleted && (
           <Button
-            variant="secondary"
+            variant="primary"
             size="sm"
             onClick={handleFinishSession}
             isLoading={evaluating}
-            className="text-xs font-semibold"
+            className="text-xs font-bold shadow-xs bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
           >
-            Finish & Review
+            <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
+            <span>Finish & Grade</span>
           </Button>
         )}
       </div>
@@ -286,83 +285,94 @@ export default function StudentSessionPage() {
       {/* Evaluating overlay state */}
       {evaluating && (
         <div className="my-auto py-12 text-center space-y-4">
-          <div className="h-14 w-14 rounded-2xl bg-primary-100 text-primary-700 flex items-center justify-center mx-auto animate-pulse">
-            <Sparkles className="h-7 w-7 animate-spin" />
+          <div className="h-16 w-16 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/30 animate-bounce">
+            <Award className="h-8 w-8" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-navy-900">Rafiq is reviewing your session...</h3>
-            <p className="text-xs text-neutral-600 mt-1">
-              Analyzing your understanding and preparing your progress summary!
+            <h3 className="text-xl font-black text-navy-900 dark:text-white">Rafiq is evaluating your session...</h3>
+            <p className="text-xs text-neutral-500 mt-1 max-w-sm mx-auto">
+              Analyzing your Socratic steps, understanding, and calculating your mastery tier!
             </p>
           </div>
         </div>
       )}
 
-      {/* Evaluation Summary Card (when completed) */}
-      {!evaluating && isCompleted && evaluation && (
-        <div className="py-4 space-y-4">
-          <Card className="border-primary-200 bg-gradient-to-b from-surface to-primary-50/20 shadow-sm">
-            <CardHeader className="text-center pb-2">
-              <div className="h-10 w-10 rounded-full bg-semantic-success-bg text-semantic-success flex items-center justify-center mx-auto mb-1">
-                <CheckCircle className="h-5 w-5" />
-              </div>
-              <CardTitle className="text-xl font-extrabold text-navy-900">
-                Mission Complete!
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <MasteryMeter level={evaluation.level as MasteryLevel} />
-
-              <div className="p-3.5 bg-surface rounded-lg border border-neutral-200 space-y-2 text-xs leading-relaxed text-neutral-800">
-                <p className="font-medium">{evaluation.studentSummary}</p>
-              </div>
-
-              {evaluation.strengths?.length > 0 && (
-                <div className="space-y-1.5 text-xs">
-                  <span className="font-bold text-navy-900 uppercase tracking-wider text-2xs">
-                    What You Did Great:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {evaluation.strengths.map((str: string, i: number) => (
-                      <span
-                        key={i}
-                        className="bg-semantic-success-bg text-semantic-success px-2.5 py-1 rounded-md font-medium text-xs border border-green-200"
-                      >
-                        ✓ {str}
-                      </span>
-                    ))}
-                  </div>
+      {/* Evaluation Results Card (If session completed) */}
+      {isCompleted && evaluation && !evaluating && (
+        <div className="my-4 space-y-4">
+          <div className="rounded-3xl bg-gradient-to-br from-navy-950 via-indigo-950 to-neutral-900 text-white p-6 sm:p-7 shadow-2xl border border-indigo-900/60 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30">
+                  <Award className="h-6 w-6" />
                 </div>
-              )}
-
-              {evaluation.nextStep && (
-                <div className="p-3 bg-accent-100/60 rounded-lg border border-amber-200 text-xs text-amber-950 flex items-start gap-2">
-                  <Lightbulb className="h-4 w-4 text-accent-500 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold">Next Step: </span>
-                    <span>{evaluation.nextStep}</span>
-                  </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">Mission Evaluation Complete!</h3>
+                  <p className="text-xs text-indigo-200">
+                    Socratic Mastery Assessment for {mission?.title}
+                  </p>
                 </div>
-              )}
-
-              <div className="pt-2 text-center">
-                <Button asChild variant="primary" size="md">
-                  <Link href="/missions">Back to My Missions</Link>
-                </Button>
               </div>
-            </CardContent>
-          </Card>
+
+              <LevelChip level={evaluation.level} size="md" />
+            </div>
+
+            <div className="p-4 bg-white/10 rounded-2xl border border-white/10">
+              <MasteryMeter level={evaluation.level} showChip={false} />
+            </div>
+
+            {evaluation.studentSummary && (
+              <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/5">
+                {evaluation.studentSummary}
+              </p>
+            )}
+
+            {evaluation.strengths?.length > 0 && (
+              <div className="space-y-2">
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>Key Strengths Observed:</span>
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {evaluation.strengths.map((str: string, i: number) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                    >
+                      ✓ {str}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {evaluation.nextStep && (
+              <div className="p-3.5 bg-amber-500/15 rounded-2xl border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2.5">
+                <Lightbulb className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-amber-300">Next Step: </strong>
+                  <span>{evaluation.nextStep}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="pt-2 text-center">
+              <Button asChild variant="primary" size="md" className="font-bold bg-white text-indigo-950 hover:bg-neutral-100">
+                <Link href="/missions">Back to My Missions</Link>
+              </Button>
+            </div>
+          </div>
 
           <div className="text-center">
-            <span className="text-xs text-neutral-500 uppercase font-semibold">Transcript History Below</span>
+            <span className="text-xs text-neutral-400 uppercase font-black tracking-wider">Session Transcript Below</span>
           </div>
         </div>
       )}
 
       {/* Error Banner */}
       {errorBanner && (
-        <div className="my-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2 shrink-0">
-          <AlertCircle className="h-4 w-4 shrink-0 text-semantic-danger" />
+        <div className="my-2 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-xs font-bold flex items-center gap-2 shrink-0">
+          <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
           <span>{errorBanner}</span>
         </div>
       )}
@@ -375,19 +385,19 @@ export default function StudentSessionPage() {
             return (
               <div
                 key={m.id}
-                className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
+                className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"} animate-fadeIn`}
               >
                 {!isUser && (
-                  <div className="h-8 w-8 rounded-full bg-primary-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                    <MessageSquare className="h-4 w-4" />
+                  <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-indigo-500/20">
+                    <Sparkles className="h-4 w-4" />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm md:text-base ${
+                  className={`max-w-[85%] rounded-3xl px-5 py-3.5 text-sm md:text-base leading-relaxed ${
                     isUser
-                      ? "bg-primary-600 text-white rounded-tr-xs"
-                      : "bg-surface border border-neutral-200 text-neutral-900 rounded-tl-xs shadow-2xs"
+                      ? "bg-gradient-to-r from-indigo-600 to-primary-600 text-white rounded-tr-xs shadow-md shadow-indigo-500/15 font-medium"
+                      : "bg-white dark:bg-neutral-850 border border-neutral-200/90 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-tl-xs shadow-sm"
                   }`}
                 >
                   <MarkdownView content={m.content} />
@@ -398,26 +408,26 @@ export default function StudentSessionPage() {
 
           {/* Active Streaming Chunk Bubble */}
           {isStreaming && streamBuffer && (
-            <div className="flex gap-2.5 justify-start">
-              <div className="h-8 w-8 rounded-full bg-primary-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs animate-pulse">
-                <MessageSquare className="h-4 w-4" />
+            <div className="flex gap-3 justify-start">
+              <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-indigo-500/20 animate-pulse">
+                <Sparkles className="h-4 w-4" />
               </div>
-              <div className="max-w-[85%] rounded-2xl px-4 py-3 text-sm md:text-base bg-surface border border-neutral-200 text-neutral-900 rounded-tl-xs shadow-2xs">
+              <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-sm md:text-base bg-white dark:bg-neutral-850 border border-neutral-200/90 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-tl-xs shadow-sm">
                 <MarkdownView content={streamBuffer} />
               </div>
             </div>
           )}
 
-          {/* Typing Indicator while waiting for initial tokens */}
+          {/* Typing Indicator */}
           {isStreaming && !streamBuffer && (
-            <div className="flex gap-2.5 justify-start">
-              <div className="h-8 w-8 rounded-full bg-primary-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <MessageSquare className="h-4 w-4" />
+            <div className="flex gap-3 justify-start">
+              <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+                <Sparkles className="h-4 w-4" />
               </div>
-              <div className="bg-surface border border-neutral-200 rounded-2xl px-4 py-3 flex items-center gap-1.5 shadow-2xs">
-                <span className="h-2 w-2 rounded-full bg-primary-500 animate-bounce" />
-                <span className="h-2 w-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.2s]" />
-                <span className="h-2 w-2 rounded-full bg-primary-500 animate-bounce [animation-delay:0.4s]" />
+              <div className="bg-white dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800 rounded-3xl px-5 py-3.5 flex items-center gap-2 shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-indigo-500 animate-bounce" />
+                <span className="h-2 w-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.2s]" />
+                <span className="h-2 w-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           )}
@@ -428,28 +438,41 @@ export default function StudentSessionPage() {
 
       {/* Composer Section (pinned bottom) */}
       {!isCompleted && !evaluating && (
-        <div className="pt-2 border-t border-neutral-200 space-y-2 shrink-0 bg-neutral-50">
-          <div className="flex items-center justify-between">
-            {hasStudentSentMessage ? (
-              <button
-                type="button"
-                onClick={handleStuck}
-                disabled={isStreaming}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-800 hover:bg-primary-200/80 transition-colors disabled:opacity-50"
-              >
-                <HelpCircle className="h-3.5 w-3.5" />
-                <span>I'm stuck</span>
-              </button>
-            ) : <div />}
+        <div className="pt-3 border-t border-neutral-200/80 dark:border-neutral-800 space-y-2.5 shrink-0 bg-neutral-50 dark:bg-neutral-950">
+          {/* Quick Action Suggestion Chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => handleSendMessage("I'm stuck, can you give me a hint?")}
+              disabled={isStreaming}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 border border-amber-300/60 dark:border-amber-700/60 transition-all hover:scale-102 disabled:opacity-50"
+            >
+              <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+              <span>I'm stuck (Hint)</span>
+            </button>
 
-            {inputText.length >= 800 && (
-              <span className={`text-2xs font-mono ${inputText.length > 950 ? "text-semantic-danger font-bold" : "text-neutral-500"}`}>
-                {inputText.length} / 1000
-              </span>
-            )}
+            <button
+              type="button"
+              onClick={() => handleSendMessage("Can you give me a simpler example?")}
+              disabled={isStreaming}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 transition-all hover:scale-102 disabled:opacity-50"
+            >
+              <Zap className="h-3.5 w-3.5 text-indigo-500" />
+              <span>Simpler example</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSendMessage("Did I solve this correctly?")}
+              disabled={isStreaming}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-all hover:scale-102 disabled:opacity-50"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+              <span>Check my answer</span>
+            </button>
           </div>
 
-          <div className="relative flex items-end gap-2 bg-surface rounded-xl border border-neutral-300 p-2 shadow-2xs focus-within:ring-2 focus-within:ring-primary-300 focus-within:border-primary-600">
+          <div className="relative flex items-end gap-2 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-300 dark:border-neutral-700 p-2.5 shadow-md focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500">
             <textarea
               ref={textareaRef}
               rows={1}
@@ -457,9 +480,9 @@ export default function StudentSessionPage() {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={isStreaming}
-              placeholder="Type your answer or question here..."
+              placeholder="Type your answer, ask a question, or explain your thinking..."
               dir="auto"
-              className="flex-1 max-h-32 resize-none bg-transparent px-2 py-1.5 text-sm md:text-base text-neutral-900 placeholder:text-neutral-400 focus:outline-none"
+              className="flex-1 max-h-32 resize-none bg-transparent px-2 py-1.5 text-sm md:text-base text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none"
             />
             <Button
               type="button"
@@ -467,19 +490,18 @@ export default function StudentSessionPage() {
               size="icon"
               disabled={!inputText.trim() || isStreaming}
               onClick={() => handleSendMessage()}
-              className="h-9 w-9 shrink-0 rounded-lg"
+              className="h-10 w-10 shrink-0 rounded-xl bg-gradient-to-br from-indigo-600 to-primary-600 shadow-md shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all"
               aria-label="Send answer"
             >
               <Send className="h-4 w-4" />
             </Button>
           </div>
 
-          <p className="text-center text-3xs sm:text-2xs text-neutral-600">
-            AI can make mistakes. Check important facts and tell your teacher if unsure.
+          <p className="text-center text-[11px] text-neutral-500 dark:text-neutral-400">
+            Rafiq Socratic Tutor never gives direct answers away. Think step-by-step!
           </p>
         </div>
       )}
     </div>
   );
 }
-

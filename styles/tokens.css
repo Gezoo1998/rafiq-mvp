@@ -1,64 +1,78 @@
 :root {
-  /* brand */
-  --primary-50: #EAF7F7;
-  --primary-100: #C9ECEC;
-  --primary-300: #62C2C5;
-  --primary-500: #168C93;
-  --primary-600: #0F7178;
-  --primary-700: #0D5C62;
-  --navy-900: #0B2545;
-  --accent-500: #E0A12B;
-  --accent-100: #FBF0D6;
+  /* Brand: Electric Indigo & Royal Sapphire */
+  --primary-50: #EEF2FF;
+  --primary-100: #E0E7FF;
+  --primary-200: #C7D2FE;
+  --primary-300: #A5B4FC;
+  --primary-400: #818CF8;
+  --primary-500: #6366F1;
+  --primary-600: #4F46E5;
+  --primary-700: #4338CA;
+  --primary-800: #3730A3;
+  --primary-900: #312E81;
+  
+  --navy-900: #0F172A;
+  --navy-950: #020617;
+  
+  --accent-50: #FFFBEB;
+  --accent-100: #FEF3C7;
+  --accent-500: #F59E0B;
+  --accent-600: #D97706;
 
-  /* neutral */
+  /* Neutral: Crisp modern slate */
   --neutral-0: #FFFFFF;
-  --neutral-50: #F4F6F8;
-  --neutral-100: #E9EDF1;
-  --neutral-200: #D8DEE5;
-  --neutral-400: #94A0AE;
-  --neutral-600: #4F5A69;
-  --neutral-900: #161D2A;
+  --neutral-50: #F8FAFC;
+  --neutral-100: #F1F5F9;
+  --neutral-200: #E2E8F0;
+  --neutral-300: #CBD5E1;
+  --neutral-400: #94A3B8;
+  --neutral-500: #64748B;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1E293B;
+  --neutral-900: #0F172A;
 
-  /* semantic */
-  --success: #1E7B4B;
-  --success-bg: #E6F4EC;
-  --warning: #A86412;
-  --warning-bg: #FDF1DC;
-  --danger: #B3392F;
-  --danger-bg: #FBE9E7;
-  --info: #1F63B5;
-  --info-bg: #E6F0FB;
+  /* Semantic Colors */
+  --success: #059669;
+  --success-bg: #ECFDF5;
+  --warning: #D97706;
+  --warning-bg: #FFFBEB;
+  --danger: #DC2626;
+  --danger-bg: #FEF2F2;
+  --info: #0284C7;
+  --info-bg: #F0F9FF;
 
-  /* levels */
-  --lvl-mastered: #1E7B4B;
-  --lvl-mastered-bg: #E6F4EC;
-  --lvl-proficient: #1F63B5;
-  --lvl-proficient-bg: #E6F0FB;
-  --lvl-developing: #A86412;
-  --lvl-developing-bg: #FDF1DC;
-  --lvl-needs-support: #B5532A;
-  --lvl-needs-support-bg: #FBEBE2;
+  /* Mastery Levels */
+  --lvl-mastered: #059669;
+  --lvl-mastered-bg: #ECFDF5;
+  --lvl-proficient: #0284C7;
+  --lvl-proficient-bg: #F0F9FF;
+  --lvl-developing: #D97706;
+  --lvl-developing-bg: #FFFBEB;
+  --lvl-needs-support: #E11D48;
+  --lvl-needs-support-bg: #FFF1F2;
 
-  /* subjects */
-  --subj-math: #4C4FD6;
-  --subj-science: #2A8A4A;
-  --subj-english: #B8438A;
+  /* Subject Identities */
+  --subj-math: #4F46E5;
+  --subj-science: #059669;
+  --subj-english: #E11D48;
 
-  /* shape & motion */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06);
-  --shadow-md: 0 4px 12px rgba(11, 37, 69, 0.08);
-  --shadow-lg: 0 12px 32px rgba(11, 37, 69, 0.12);
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Shape & Motion */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation: none !important;
-    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
-
