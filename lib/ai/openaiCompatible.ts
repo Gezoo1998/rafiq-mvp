@@ -142,3 +142,4 @@ export class OpenAICompatibleProvider implements AIProvider {
     return { data: parsedData, usage };
   }
 }
+

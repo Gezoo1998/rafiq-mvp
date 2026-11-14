@@ -41,3 +41,4 @@ export function MarkdownView({ content, className }: MarkdownViewProps) {
     </div>
   );
 }
+

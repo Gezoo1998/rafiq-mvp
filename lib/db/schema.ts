@@ -442,3 +442,4 @@ export const auditLog = pgTable(
   },
   (table) => [index("audit_log_school_created_idx").on(table.schoolId, table.createdAt)]
 );
+

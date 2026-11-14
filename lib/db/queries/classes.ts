@@ -152,3 +152,4 @@ export async function getClassStudents(actor: Actor, classId: string) {
     .where(eq(classStudents.classId, classId))
     .orderBy(users.fullName);
 }
+

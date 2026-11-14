@@ -130,3 +130,4 @@ export async function generateImportTemplate(): Promise<Buffer> {
   const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer);
 }
+

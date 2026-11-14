@@ -32,3 +32,4 @@ export interface AIProvider {
     maxTokens?: number;
   }): Promise<{ data: unknown; usage: Usage }>;
 }
+

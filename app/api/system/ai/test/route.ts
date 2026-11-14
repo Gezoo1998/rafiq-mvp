@@ -3,6 +3,9 @@ import { requireRole } from "@/lib/auth/guards";
 import { getAIProvider } from "@/lib/ai";
 import { logAudit } from "@/lib/db/queries/system";
 
+export const maxDuration = 30;
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   try {
     const actor = await requireRole(["system_admin"]);
@@ -49,3 +52,4 @@ export async function POST() {
     );
   }
 }
+

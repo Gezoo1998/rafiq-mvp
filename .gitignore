@@ -26,3 +26,4 @@ yarn-error.log*
 
 # Drizzle migrations / studio metadata if any
 drizzle/meta/
+

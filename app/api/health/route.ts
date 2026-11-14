@@ -32,3 +32,4 @@ export async function GET() {
     { status: isHealthy ? 200 : 503 }
   );
 }
+

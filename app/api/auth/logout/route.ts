@@ -17,3 +17,4 @@ export async function POST() {
   await clearSessionCookie();
   return NextResponse.json({ success: true });
 }
+

@@ -57,3 +57,4 @@ export function MasteryMeter({ level, showChip = true, className }: MasteryMeter
     </div>
   );
 }
+

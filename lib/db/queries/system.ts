@@ -131,3 +131,4 @@ export async function getSchoolDashboard(actor: Actor) {
     safetyAlerts: flaggedSessions,
   };
 }
+

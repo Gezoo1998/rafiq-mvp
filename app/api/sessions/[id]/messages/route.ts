@@ -11,6 +11,9 @@ const messageBodySchema = z.object({
   content: z.string().min(1, "Message cannot be empty").max(1000, "Message must be 1,000 characters or less"),
 });
 
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -269,3 +272,4 @@ export async function POST(
     return NextResponse.json({ error: { message: err.message } }, { status: 500 });
   }
 }
+

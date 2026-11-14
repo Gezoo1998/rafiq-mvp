@@ -245,3 +245,4 @@ export async function regenerateUserCode(
 
   return rows[0] || null;
 }
+

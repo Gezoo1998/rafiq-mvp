@@ -84,3 +84,4 @@ export function hashAccessCode(normalizedCode: string, pepper = process.env.CODE
 export function hashIp(ip: string): string {
   return crypto.createHash("sha256").update(ip || "unknown-ip").digest("hex");
 }
+

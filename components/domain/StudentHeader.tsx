@@ -55,3 +55,4 @@ export function StudentHeader({ studentName }: { studentName: string }) {
     </header>
   );
 }
+

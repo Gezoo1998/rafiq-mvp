@@ -73,3 +73,4 @@ export async function requireRole(allowedRoles: Role[]): Promise<Actor> {
     name: session.name,
   };
 }
+

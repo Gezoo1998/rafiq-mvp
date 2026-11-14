@@ -65,3 +65,4 @@ export async function updateSchool(
     .returning();
   return rows[0] || null;
 }
+

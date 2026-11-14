@@ -10,17 +10,25 @@ export function getPool(): Pool {
     if (!connectionString) {
       console.warn("DATABASE_URL is not defined in environment.");
     }
-    const isNeon = connectionString?.includes("neon.tech");
+    const isCloud =
+      connectionString &&
+      !connectionString.includes("localhost") &&
+      !connectionString.includes("127.0.0.1");
+    const ssl =
+      isCloud || connectionString?.includes("sslmode=require")
+        ? { rejectUnauthorized: false }
+        : undefined;
 
     pool = new Pool({
       connectionString: connectionString || "postgres://postgres:postgres@localhost:5432/rafiq",
-      ssl: isNeon ? { rejectUnauthorized: false } : undefined,
-      max: 20,
+      ssl,
+      max: 10,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 10000,
     });
   }
   return pool;
 }
 
 export const db = drizzle(getPool(), { schema });
+
