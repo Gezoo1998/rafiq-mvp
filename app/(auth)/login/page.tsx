@@ -7,16 +7,16 @@ import { motion } from "framer-motion";
 import { CodeInput } from "@/components/ui/code-input";
 import { Button } from "@/components/ui/button";
 import { triggerCelebrationConfetti } from "@/components/ui/motion";
+import { RafiqMascot } from "@/components/ui/mascot";
 import {
-  MessageSquare,
-  ArrowRight,
+  ArrowLeft,
   ShieldCheck,
   Sparkles,
   GraduationCap,
   BookOpen,
   Building2,
   BarChart3,
-  ArrowLeft,
+  Star,
   Lock,
 } from "lucide-react";
 
@@ -30,7 +30,7 @@ export default function LoginPage() {
   const handleSubmit = async (submitCode?: string) => {
     const targetCode = typeof submitCode === "string" ? submitCode : code;
     if (!targetCode.trim()) {
-      setError("Please enter your access code");
+      setError("Please type your access code");
       return;
     }
 
@@ -47,7 +47,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error?.message || "Invalid code. Please check your code and try again.");
+        setError(data.error?.message || "That code doesn't look right. Check your card and try again!");
         setLoading(false);
         setQuickRole(null);
         return;
@@ -72,81 +72,46 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-indigo-950 via-navy-900 to-slate-950 relative overflow-hidden">
-      {/* Background Animated Orbs */}
-      <motion.div
-        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ x: [0, -30, 0], y: [0, 20, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"
-      />
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-[#FFFDF7] relative overflow-hidden">
+      {/* Floating Ambient Decors */}
+      <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-amber-200/40 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-sky-200/40 blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md mx-auto space-y-6 text-center relative z-10">
         {/* Top Back Link */}
         <div className="flex justify-start">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 hover:text-amber-950 transition-colors"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
+            <ArrowLeft className="h-4 w-4" />
             <span>Back to Homepage</span>
           </Link>
         </div>
 
-        {/* Brand Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-3"
-        >
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center h-16 w-16 rounded-3xl bg-gradient-to-br from-indigo-500 via-primary-500 to-purple-600 text-white shadow-xl shadow-indigo-500/30 mx-auto hover:scale-105 transition-all"
-          >
-            <MessageSquare className="h-8 w-8" />
-          </Link>
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white flex items-center justify-center gap-2">
-              Rafiq
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/25 text-indigo-300 border border-indigo-400/30">
-                Portal
-              </span>
-            </h1>
-            <p className="text-xl font-bold text-indigo-400 font-sans mt-0.5" dir="rtl">
-              رفيق • التعلم الذكي
-            </p>
-          </div>
-          <p className="text-sm text-neutral-300">
-            Learn with your personal AI study companion
+        {/* Mascot Greeting */}
+        <div className="flex flex-col items-center space-y-2">
+          <RafiqMascot size="lg" expression="waving" />
+          <h1 className="text-3xl font-black text-neutral-900 tracking-tight">
+            Welcome to Rafiq! 🌟
+          </h1>
+          <p className="text-sm font-bold text-amber-700 font-sans" dir="rtl">
+            أهلاً بك يا بطل! جاهز للمغامرة والتعلم؟
           </p>
-        </motion.div>
+        </div>
 
-        {/* Login Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 16 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 280, damping: 24, delay: 0.1 }}
-          className="bg-white/95 backdrop-blur-xl rounded-3xl border border-white/20 p-6 sm:p-8 shadow-2xl text-start space-y-5"
-        >
-          <div className="space-y-1 text-center sm:text-start">
-            <h2 className="text-lg font-black text-navy-900">Enter your access code</h2>
-            <p className="text-xs text-neutral-500">
-              Type the personal code from your card or school administrator
+        {/* Main Card with Chunky 3D Border */}
+        <div className="rounded-3xl border-4 border-amber-300 bg-white p-6 sm:p-8 shadow-xl space-y-5 text-start">
+          <div>
+            <h2 className="text-base font-black text-neutral-900">
+              Enter Your Card Code 🔑
+            </h2>
+            <p className="text-xs font-bold text-neutral-500 mt-0.5">
+              Type the code from your card or school administrator.
             </p>
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             <CodeInput
               value={code}
               onChange={(val) => {
@@ -154,109 +119,105 @@ export default function LoginPage() {
                 if (error) setError(null);
               }}
               error={error || undefined}
-              onEnter={() => handleSubmit()}
               disabled={loading}
-              autoFocus
+              onEnter={() => handleSubmit()}
             />
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              fullWidth
-              isLoading={loading}
-              className="text-base font-bold shadow-md shadow-indigo-500/25 bg-gradient-to-r from-indigo-600 to-primary-600 hover:from-indigo-700 hover:to-primary-700 rounded-xl h-12"
+            <button
+              type="button"
+              onClick={() => handleSubmit()}
+              disabled={loading || !code.trim()}
+              className="w-full py-3.5 px-4 rounded-2xl text-sm font-black text-neutral-950 bg-amber-400 hover:bg-amber-300 border-b-4 border-amber-600 active:border-b-0 active:translate-y-1 shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              <span>{quickRole ? `Entering as ${quickRole}...` : "Log In"}</span>
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-
-          {/* Quick 1-Click Demo Logins */}
-          <div className="pt-4 border-t border-neutral-200/80 space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-extrabold text-navy-900 flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
-                <span>1-Click Demo Access:</span>
-              </span>
-              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
-                Instant Access
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={() => handleQuickSelect("S-ZJD0-1BXZ-40", "Student")}
-                disabled={loading}
-                className="p-3 rounded-2xl border border-blue-200 hover:border-blue-400 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 hover:shadow-md text-start transition-all disabled:opacity-50"
-              >
-                <div className="flex items-center gap-1.5 text-blue-700 font-extrabold text-xs">
-                  <GraduationCap className="h-4 w-4" />
-                  <span>Student</span>
-                </div>
-                <div className="text-[11px] font-semibold text-blue-600 truncate mt-0.5">Omar (Grade 6)</div>
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={() => handleQuickSelect("T-W05C-X6TS-PG", "Teacher")}
-                disabled={loading}
-                className="p-3 rounded-2xl border border-emerald-200 hover:border-emerald-400 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 hover:shadow-md text-start transition-all disabled:opacity-50"
-              >
-                <div className="flex items-center gap-1.5 text-emerald-700 font-extrabold text-xs">
-                  <BookOpen className="h-4 w-4" />
-                  <span>Teacher</span>
-                </div>
-                <div className="text-[11px] font-semibold text-emerald-600 truncate mt-0.5">Ms. Huda (Math)</div>
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={() => handleQuickSelect("A-KBXZ-9GS6-F1", "Principal")}
-                disabled={loading}
-                className="p-3 rounded-2xl border border-purple-200 hover:border-purple-400 bg-gradient-to-br from-purple-50/80 to-pink-50/80 hover:shadow-md text-start transition-all disabled:opacity-50"
-              >
-                <div className="flex items-center gap-1.5 text-purple-700 font-extrabold text-xs">
-                  <Building2 className="h-4 w-4" />
-                  <span>Principal</span>
-                </div>
-                <div className="text-[11px] font-semibold text-purple-600 truncate mt-0.5">Dr. Mona (Admin)</div>
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={() => handleQuickSelect("Y-8164-RC0Z-T4", "System Admin")}
-                disabled={loading}
-                className="p-3 rounded-2xl border border-amber-200 hover:border-amber-400 bg-gradient-to-br from-amber-50/80 to-orange-50/80 hover:shadow-md text-start transition-all disabled:opacity-50"
-              >
-                <div className="flex items-center gap-1.5 text-amber-700 font-extrabold text-xs">
-                  <BarChart3 className="h-4 w-4" />
-                  <span>System Admin</span>
-                </div>
-                <div className="text-[11px] font-semibold text-amber-600 truncate mt-0.5">Operations Command</div>
-              </motion.button>
-            </div>
+              {loading && !quickRole ? (
+                <>
+                  <div className="h-4 w-4 border-2 border-neutral-950 border-t-transparent rounded-full animate-spin" />
+                  <span>Entering Quest...</span>
+                </>
+              ) : (
+                <>
+                  <span>Start Learning Quest 🚀</span>
+                </>
+              )}
+            </button>
           </div>
 
-          <div className="pt-2 text-center text-xs text-neutral-500 border-t border-neutral-100">
-            Lost your code? Ask your school administrator or teacher.
-          </div>
-        </motion.div>
+          {/* 1-Click Test Access Pills */}
+          <div className="pt-4 border-t-2 border-amber-100 space-y-2.5">
+            <div className="flex items-center justify-between text-xs font-black text-neutral-500">
+              <span>Or click a demo character:</span>
+              <span className="text-[10px] text-amber-600 font-black">1-Click Login</span>
+            </div>
 
-        {/* Trust & Safe footer note */}
-        <div className="flex items-center justify-center gap-2 text-xs font-semibold text-neutral-400">
-          <ShieldCheck className="h-4 w-4 text-emerald-400" />
-          <span>Private & safe for K-12 students • Zero email or password required</span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickSelect("S-ZJD0-1BXZ-40", "student")}
+                disabled={loading}
+                className="p-2.5 rounded-2xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 text-left transition-all active:scale-95 disabled:opacity-50"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-black text-amber-900">
+                  <GraduationCap className="h-4 w-4 text-amber-600" />
+                  <span>Omar (Student)</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                  S-ZJD0-1BXZ-40
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickSelect("T-W05C-X6TS-PG", "teacher")}
+                disabled={loading}
+                className="p-2.5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-left transition-all active:scale-95 disabled:opacity-50"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-black text-emerald-900">
+                  <BookOpen className="h-4 w-4 text-emerald-600" />
+                  <span>Ms. Huda (Teacher)</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                  T-W05C-X6TS-PG
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickSelect("A-KBXZ-9GS6-F1", "school_admin")}
+                disabled={loading}
+                className="p-2.5 rounded-2xl border-2 border-sky-300 bg-sky-50 hover:bg-sky-100 text-left transition-all active:scale-95 disabled:opacity-50"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-black text-sky-900">
+                  <Building2 className="h-4 w-4 text-sky-600" />
+                  <span>Dr. Mona (Principal)</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                  A-KBXZ-9GS6-F1
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickSelect("Y-8164-RC0Z-T4", "system_admin")}
+                disabled={loading}
+                className="p-2.5 rounded-2xl border-2 border-indigo-300 bg-indigo-50 hover:bg-indigo-100 text-left transition-all active:scale-95 disabled:opacity-50"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-black text-indigo-900">
+                  <BarChart3 className="h-4 w-4 text-indigo-600" />
+                  <span>System Ops</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                  Y-8164-RC0Z-T4
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Security Footer Note */}
+        <p className="text-xs font-bold text-neutral-500 flex items-center justify-center gap-1.5">
+          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+          <span>Zero passwords needed • 100% Student Data Privacy</span>
+        </p>
       </div>
     </main>
   );
