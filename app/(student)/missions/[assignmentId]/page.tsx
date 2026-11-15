@@ -414,14 +414,18 @@ export default function StudentSessionPage() {
                   className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   {!isUser && (
-                    <RafiqMascot size="sm" expression="waving" className="shrink-0 mt-0.5" />
+                    <img
+                      src="/images/rafiq-avatar.png"
+                      alt="Rafiq"
+                      className="h-9 w-9 rounded-2xl object-cover shrink-0 mt-0.5 shadow-xs"
+                    />
                   )}
 
                   <div
                     className={`max-w-[85%] rounded-3xl px-5 py-3.5 text-sm md:text-base leading-relaxed ${
                       isUser
-                        ? "bg-sky-500 text-white rounded-tr-xs shadow-md border-b-4 border-sky-700 font-bold"
-                        : "bg-white border-2 border-amber-200 text-neutral-900 rounded-tl-xs shadow-sm font-medium"
+                        ? "bg-[#38BDF8] text-white rounded-tr-xs shadow-md font-bold"
+                        : "bg-white border border-sky-100 text-[#1E293B] rounded-tl-xs shadow-sm font-medium"
                     }`}
                   >
                     <MarkdownView content={m.content} />
@@ -438,8 +442,12 @@ export default function StudentSessionPage() {
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-3 justify-start"
             >
-              <RafiqMascot size="sm" expression="thinking" className="shrink-0 mt-0.5" />
-              <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-sm md:text-base bg-white border-2 border-amber-200 text-neutral-900 rounded-tl-xs shadow-sm font-medium">
+              <img
+                src="/images/rafiq-avatar.png"
+                alt="Rafiq"
+                className="h-9 w-9 rounded-2xl object-cover shrink-0 mt-0.5 shadow-xs"
+              />
+              <div className="max-w-[85%] rounded-3xl px-5 py-3.5 text-sm md:text-base bg-white border border-sky-100 text-[#1E293B] rounded-tl-xs shadow-sm font-medium">
                 <MarkdownView content={streamBuffer} />
               </div>
             </motion.div>
@@ -448,11 +456,15 @@ export default function StudentSessionPage() {
           {/* Typing Indicator */}
           {isStreaming && !streamBuffer && (
             <div className="flex gap-3 justify-start">
-              <RafiqMascot size="sm" expression="thinking" className="shrink-0" />
-              <div className="bg-white border-2 border-amber-200 rounded-3xl px-5 py-3.5 flex items-center gap-2 shadow-xs">
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-500 animate-bounce" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-500 animate-bounce [animation-delay:0.2s]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-500 animate-bounce [animation-delay:0.4s]" />
+              <img
+                src="/images/rafiq-avatar.png"
+                alt="Rafiq"
+                className="h-9 w-9 rounded-2xl object-cover shrink-0"
+              />
+              <div className="bg-white border border-sky-200 rounded-3xl px-5 py-3.5 flex items-center gap-2 shadow-xs">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#38BDF8] animate-bounce" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#38BDF8] animate-bounce [animation-delay:0.2s]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#38BDF8] animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           )}
@@ -464,36 +476,34 @@ export default function StudentSessionPage() {
       {/* Composer Section (pinned bottom) */}
       {!isCompleted && !evaluating && (
         <div className="pt-3 border-t-2 border-amber-200 space-y-2.5 shrink-0 bg-[#FFFDF7]/90 backdrop-blur-md">
-          {/* Quick Action Suggestion Chips (Chunky Buttons) */}
+          {/* Quick Action Suggestion Chips (Concept 1 matching buttons) */}
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => handleSendMessage("I'm stuck, can you give me a hint?")}
               disabled={isStreaming}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-amber-300 hover:bg-amber-200 text-amber-950 border-b-2 border-amber-500 active:border-b-0 active:translate-y-0.5 transition-all disabled:opacity-50 shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-[#38BDF8] hover:bg-[#0EA5E9] text-white shadow-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              <Lightbulb className="h-3.5 w-3.5 text-amber-800" />
-              <span>💡 I&apos;m stuck (Give clue)</span>
+              <span>Give Me a Hint!</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleSendMessage("Can you give me a simpler example?")}
               disabled={isStreaming}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-sky-200 hover:bg-sky-100 text-sky-950 border-b-2 border-sky-400 active:border-b-0 active:translate-y-0.5 transition-all disabled:opacity-50 shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-[#A855F7] hover:bg-[#9333EA] text-white shadow-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              <Zap className="h-3.5 w-3.5 text-sky-700" />
-              <span>✨ Simpler example</span>
+              <span>Show Me a Clue</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleSendMessage("Did I solve this correctly?")}
               disabled={isStreaming}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-emerald-200 hover:bg-emerald-100 text-emerald-950 border-b-2 border-emerald-400 active:border-b-0 active:translate-y-0.5 transition-all disabled:opacity-50 shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black bg-[#FFC72C] hover:bg-[#F2B81A] text-[#1E293B] shadow-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700" />
-              <span>🏆 Check my answer</span>
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>Check My Answer ⭐</span>
             </button>
           </div>
 

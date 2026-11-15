@@ -97,25 +97,29 @@ export default function StudentMissionsPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Cheerful Quest Banner with Mascot */}
+      {/* Cheerful Quest Banner with Mascot matching Concept 1 */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="rounded-3xl bg-amber-400 p-6 sm:p-8 text-neutral-950 border-4 border-amber-500 shadow-xl relative overflow-hidden"
+        className="rounded-[36px] bg-gradient-to-r from-[#85C9EE] via-[#BAE3F9] to-[#E8F6FD] p-6 sm:p-8 text-[#1E293B] border-2 border-white shadow-[0_16px_40px_rgba(56,189,248,0.15)] relative overflow-hidden"
       >
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4 max-w-xl">
-            <RafiqMascot size="lg" expression="waving" className="shrink-0 hidden sm:flex" />
+            <img
+              src="/images/rafiq-avatar.png"
+              alt="Rafiq"
+              className="h-16 w-16 rounded-3xl object-cover shadow-sm shrink-0 hidden sm:flex"
+            />
             <div className="space-y-1.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 text-xs font-black uppercase tracking-wider text-amber-900 border border-amber-500 shadow-2xs">
-                <Rocket className="h-3.5 w-3.5 text-amber-600" />
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white text-xs font-black uppercase tracking-wider text-sky-800 shadow-2xs">
+                <Rocket className="h-3.5 w-3.5 text-sky-600" />
                 <span>My Learning Adventure</span>
               </span>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1E293B]">
                 Ready for Today&apos;s Quests? 🚀
               </h1>
-              <p className="text-sm font-bold text-neutral-900 leading-relaxed">
+              <p className="text-sm font-bold text-[#334155] leading-relaxed">
                 Step-by-step interactive practice. Ask Rafiq for clues and conquer your challenges at your own pace!
               </p>
             </div>
@@ -124,22 +128,22 @@ export default function StudentMissionsPage() {
           <div className="flex items-center gap-3 shrink-0">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="bg-white px-5 py-3.5 rounded-2xl text-center border-2 border-neutral-900 shadow-md"
+              className="bg-white px-5 py-3.5 rounded-2xl text-center border border-white shadow-sm"
             >
-              <div className="text-3xl font-black text-amber-600">
+              <div className="text-3xl font-black text-amber-500">
                 <AnimatedCounter value={dueSoonList.length} />
               </div>
-              <div className="text-[11px] font-black text-neutral-700 uppercase tracking-wider mt-0.5">To Do ⭐</div>
+              <div className="text-[11px] font-black text-[#475569] uppercase tracking-wider mt-0.5">To Do ⭐</div>
             </motion.div>
 
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="bg-white px-5 py-3.5 rounded-2xl text-center border-2 border-neutral-900 shadow-md"
+              className="bg-white px-5 py-3.5 rounded-2xl text-center border border-white shadow-sm"
             >
-              <div className="text-3xl font-black text-emerald-600">
+              <div className="text-3xl font-black text-emerald-500">
                 <AnimatedCounter value={completedList.length} />
               </div>
-              <div className="text-[11px] font-black text-neutral-700 uppercase tracking-wider mt-0.5">Mastered 🏆</div>
+              <div className="text-[11px] font-black text-[#475569] uppercase tracking-wider mt-0.5">Mastered 🏆</div>
             </motion.div>
           </div>
         </div>

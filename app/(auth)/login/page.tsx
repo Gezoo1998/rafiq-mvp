@@ -5,13 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CodeInput } from "@/components/ui/code-input";
-import { Button } from "@/components/ui/button";
 import { triggerCelebrationConfetti } from "@/components/ui/motion";
-import { RafiqMascot } from "@/components/ui/mascot";
 import {
   ArrowLeft,
   ShieldCheck,
-  Sparkles,
   GraduationCap,
   BookOpen,
   Building2,
@@ -72,17 +69,17 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-[#FFFDF7] relative overflow-hidden">
-      {/* Floating Ambient Decors */}
-      <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-amber-200/40 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-sky-200/40 blur-3xl pointer-events-none" />
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-[#85C9EE] via-[#BAE3F9] to-[#E8F6FD] relative overflow-hidden">
+      {/* Floating Cloud Decors */}
+      <div className="absolute top-10 left-10 w-72 h-36 rounded-full bg-white/40 blur-2xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-80 h-40 rounded-full bg-white/45 blur-2xl pointer-events-none" />
 
       <div className="w-full max-w-md mx-auto space-y-6 text-center relative z-10">
         {/* Top Back Link */}
         <div className="flex justify-start">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 hover:text-amber-950 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-black text-[#1E293B] bg-white/80 hover:bg-white px-3.5 py-1.5 rounded-full shadow-2xs transition-all"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Homepage</span>
@@ -91,22 +88,26 @@ export default function LoginPage() {
 
         {/* Mascot Greeting */}
         <div className="flex flex-col items-center space-y-2">
-          <RafiqMascot size="lg" expression="waving" />
-          <h1 className="text-3xl font-black text-neutral-900 tracking-tight">
+          <img
+            src="/images/rafiq-avatar.png"
+            alt="Rafiq"
+            className="h-16 w-16 rounded-3xl object-cover shadow-md"
+          />
+          <h1 className="text-3xl font-black text-[#1E293B] tracking-tight">
             Welcome to Rafiq! 🌟
           </h1>
-          <p className="text-sm font-bold text-amber-700 font-sans" dir="rtl">
+          <p className="text-sm font-black text-[#2D3F5C] font-sans" dir="rtl">
             أهلاً بك يا بطل! جاهز للمغامرة والتعلم؟
           </p>
         </div>
 
-        {/* Main Card with Chunky 3D Border */}
-        <div className="rounded-3xl border-4 border-amber-300 bg-white p-6 sm:p-8 shadow-xl space-y-5 text-start">
+        {/* Main Card */}
+        <div className="rounded-[32px] border-2 border-white bg-white/95 p-6 sm:p-8 shadow-[0_20px_50px_rgba(56,189,248,0.2)] space-y-5 text-start">
           <div>
-            <h2 className="text-base font-black text-neutral-900">
+            <h2 className="text-base font-black text-[#1E293B]">
               Enter Your Card Code 🔑
             </h2>
-            <p className="text-xs font-bold text-neutral-500 mt-0.5">
+            <p className="text-xs font-bold text-[#64748B] mt-0.5">
               Type the code from your card or school administrator.
             </p>
           </div>
@@ -127,11 +128,11 @@ export default function LoginPage() {
               type="button"
               onClick={() => handleSubmit()}
               disabled={loading || !code.trim()}
-              className="w-full py-3.5 px-4 rounded-2xl text-sm font-black text-neutral-950 bg-amber-400 hover:bg-amber-300 border-b-4 border-amber-600 active:border-b-0 active:translate-y-1 shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 rounded-full text-sm font-black text-[#1E293B] bg-[#FFC72C] hover:bg-[#F2B81A] shadow-md transition-all hover:scale-102 active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && !quickRole ? (
                 <>
-                  <div className="h-4 w-4 border-2 border-neutral-950 border-t-transparent rounded-full animate-spin" />
+                  <div className="h-4 w-4 border-2 border-[#1E293B] border-t-transparent rounded-full animate-spin" />
                   <span>Entering Quest...</span>
                 </>
               ) : (
@@ -143,10 +144,10 @@ export default function LoginPage() {
           </div>
 
           {/* 1-Click Test Access Pills */}
-          <div className="pt-4 border-t-2 border-amber-100 space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-black text-neutral-500">
+          <div className="pt-4 border-t border-sky-100 space-y-2.5">
+            <div className="flex items-center justify-between text-xs font-black text-[#64748B]">
               <span>Or click a demo character:</span>
-              <span className="text-[10px] text-amber-600 font-black">1-Click Login</span>
+              <span className="text-[10px] text-sky-600 font-black">1-Click Login</span>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -154,13 +155,13 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleQuickSelect("S-ZJD0-1BXZ-40", "student")}
                 disabled={loading}
-                className="p-2.5 rounded-2xl border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 text-left transition-all active:scale-95 disabled:opacity-50"
+                className="p-2.5 rounded-2xl border border-sky-200 bg-[#F0F8FF] hover:bg-[#E1F2FE] text-left transition-all active:scale-95 disabled:opacity-50"
               >
-                <div className="flex items-center gap-1.5 text-xs font-black text-amber-900">
-                  <GraduationCap className="h-4 w-4 text-amber-600" />
+                <div className="flex items-center gap-1.5 text-xs font-black text-[#1E293B]">
+                  <GraduationCap className="h-4 w-4 text-amber-500" />
                   <span>Omar (Student)</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                <span className="text-[10px] font-mono font-bold text-[#64748B]">
                   S-ZJD0-1BXZ-40
                 </span>
               </button>
@@ -169,13 +170,13 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleQuickSelect("T-W05C-X6TS-PG", "teacher")}
                 disabled={loading}
-                className="p-2.5 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-left transition-all active:scale-95 disabled:opacity-50"
+                className="p-2.5 rounded-2xl border border-sky-200 bg-[#F0F8FF] hover:bg-[#E1F2FE] text-left transition-all active:scale-95 disabled:opacity-50"
               >
-                <div className="flex items-center gap-1.5 text-xs font-black text-emerald-900">
-                  <BookOpen className="h-4 w-4 text-emerald-600" />
+                <div className="flex items-center gap-1.5 text-xs font-black text-[#1E293B]">
+                  <BookOpen className="h-4 w-4 text-emerald-500" />
                   <span>Ms. Huda (Teacher)</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                <span className="text-[10px] font-mono font-bold text-[#64748B]">
                   T-W05C-X6TS-PG
                 </span>
               </button>
@@ -184,13 +185,13 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleQuickSelect("A-KBXZ-9GS6-F1", "school_admin")}
                 disabled={loading}
-                className="p-2.5 rounded-2xl border-2 border-sky-300 bg-sky-50 hover:bg-sky-100 text-left transition-all active:scale-95 disabled:opacity-50"
+                className="p-2.5 rounded-2xl border border-sky-200 bg-[#F0F8FF] hover:bg-[#E1F2FE] text-left transition-all active:scale-95 disabled:opacity-50"
               >
-                <div className="flex items-center gap-1.5 text-xs font-black text-sky-900">
-                  <Building2 className="h-4 w-4 text-sky-600" />
+                <div className="flex items-center gap-1.5 text-xs font-black text-[#1E293B]">
+                  <Building2 className="h-4 w-4 text-sky-500" />
                   <span>Dr. Mona (Principal)</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                <span className="text-[10px] font-mono font-bold text-[#64748B]">
                   A-KBXZ-9GS6-F1
                 </span>
               </button>
@@ -199,13 +200,13 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleQuickSelect("Y-8164-RC0Z-T4", "system_admin")}
                 disabled={loading}
-                className="p-2.5 rounded-2xl border-2 border-indigo-300 bg-indigo-50 hover:bg-indigo-100 text-left transition-all active:scale-95 disabled:opacity-50"
+                className="p-2.5 rounded-2xl border border-sky-200 bg-[#F0F8FF] hover:bg-[#E1F2FE] text-left transition-all active:scale-95 disabled:opacity-50"
               >
-                <div className="flex items-center gap-1.5 text-xs font-black text-indigo-900">
-                  <BarChart3 className="h-4 w-4 text-indigo-600" />
+                <div className="flex items-center gap-1.5 text-xs font-black text-[#1E293B]">
+                  <BarChart3 className="h-4 w-4 text-purple-500" />
                   <span>System Ops</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-neutral-500">
+                <span className="text-[10px] font-mono font-bold text-[#64748B]">
                   Y-8164-RC0Z-T4
                 </span>
               </button>
@@ -214,7 +215,7 @@ export default function LoginPage() {
         </div>
 
         {/* Security Footer Note */}
-        <p className="text-xs font-bold text-neutral-500 flex items-center justify-center gap-1.5">
+        <p className="text-xs font-bold text-[#334155] flex items-center justify-center gap-1.5">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           <span>Zero passwords needed • 100% Student Data Privacy</span>
         </p>
