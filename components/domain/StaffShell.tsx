@@ -111,10 +111,12 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
       {/* Mobile Top Header */}
       <div className="md:hidden flex items-center justify-between h-16 px-4 bg-white border-b border-neutral-200">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex items-center justify-center h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-primary-600 text-white shadow-xs">
-            <MessageSquare className="h-4 w-4" />
-          </div>
-          <span className="font-black text-navy-900">Rafiq • رفيق</span>
+          <img
+            src="/images/new-design/rafiq-logo.png"
+            alt="Rafiq رفيق"
+            className="h-8 w-auto object-contain"
+          />
+          <span className="font-black text-navy-900">رفيق • Rafiq</span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -135,13 +137,15 @@ export function StaffShell({ user, isMockAi, children }: StaffShellProps) {
         {/* Brand */}
         <div className="p-5 border-b border-neutral-100 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-600 via-primary-600 to-purple-600 text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <MessageSquare className="h-5 w-5" />
-            </div>
+            <img
+              src="/images/new-design/rafiq-logo.png"
+              alt="Rafiq رفيق"
+              className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
+            />
             <div>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-black text-navy-900 text-lg tracking-tight">Rafiq</span>
-                <span className="font-bold text-primary-600 text-xs" dir="rtl">رفيق</span>
+                <span className="font-black text-navy-900 text-lg tracking-tight">رفيق</span>
+                <span className="font-bold text-[#1D4ED8] text-sm">Rafiq</span>
               </div>
               <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block -mt-0.5">
                 Portal Workspace

@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LogOut, Flame, Star } from "lucide-react";
+import { LogOut, Flame, Star, Sparkles } from "lucide-react";
 
 export function StudentHeader({ studentName }: { studentName: string }) {
   const router = useRouter();
@@ -31,21 +31,25 @@ export function StudentHeader({ studentName }: { studentName: string }) {
     : "ST";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-sky-100 bg-white/95 backdrop-blur-md shadow-2xs">
-      <div className="w-full max-w-[820px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md shadow-2xs">
+      <div className="w-full max-w-[860px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
         <Link href="/missions" className="flex items-center gap-3 group">
           <img
-            src="/images/rafiq-avatar.png"
-            alt="Rafiq"
-            className="h-10 w-10 rounded-2xl shadow-xs object-cover group-hover:scale-105 transition-transform"
+            src="/images/new-design/rafiq-logo.png"
+            alt="Rafiq رفيق"
+            className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
           />
           <div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-black text-[#1E293B] text-xl tracking-tight leading-none">Rafiq</span>
-              <span className="font-black text-[#1E293B] text-sm font-sans leading-none" dir="rtl">رفيق</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-black text-[#0F172A] text-xl tracking-tight leading-none">
+                رفيق
+              </span>
+              <span className="font-black text-[#1D4ED8] text-lg tracking-tight leading-none">
+                Rafiq
+              </span>
             </div>
-            <span className="text-[11px] text-sky-600 font-extrabold block mt-0.5">
-              Study Adventure 🎈
+            <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
+              مغامرة التعلم الذكي 🎈
             </span>
           </div>
         </Link>
@@ -53,22 +57,28 @@ export function StudentHeader({ studentName }: { studentName: string }) {
         <div className="flex items-center gap-2.5">
           {/* Gamified Streak & Stars */}
           <div className="hidden sm:flex items-center gap-2">
-            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#EDF5FF] text-[#2D3F5C] text-xs font-black" title="Daily Streak">
+            <div
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-amber-900 text-xs font-black"
+              title="Daily Streak"
+            >
               <Flame className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-              <span>5 Days</span>
+              <span>5 أيام</span>
             </div>
-            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#FFF7D6] text-amber-800 text-xs font-black" title="Star Points">
-              <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-              <span>120</span>
+            <div
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-900 text-xs font-black"
+              title="Star Points"
+            >
+              <Star className="h-3.5 w-3.5 text-blue-600 fill-blue-600" />
+              <span>120 نجمة</span>
             </div>
           </div>
 
           {/* Student Profile Pill */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F0F8FF] border border-sky-200">
-            <div className="h-6 w-6 rounded-full bg-[#38BDF8] text-white font-black text-[11px] flex items-center justify-center shadow-xs">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200">
+            <div className="h-6 w-6 rounded-full bg-[#1D4ED8] text-white font-black text-[11px] flex items-center justify-center shadow-xs">
               {initials}
             </div>
-            <span className="text-xs font-black text-[#1E293B] max-w-[110px] truncate">
+            <span className="text-xs font-black text-slate-800 max-w-[110px] truncate">
               {studentName}
             </span>
           </div>
@@ -78,10 +88,10 @@ export function StudentHeader({ studentName }: { studentName: string }) {
             size="sm"
             onClick={handleLogout}
             isLoading={loggingOut}
-            className="text-neutral-500 hover:text-rose-600 hover:bg-rose-50 h-9 px-2.5 rounded-full gap-1 transition-colors"
+            className="text-slate-500 hover:text-rose-600 hover:bg-rose-50 h-9 px-2.5 rounded-full gap-1 transition-colors"
           >
             <LogOut className="h-4 w-4" />
-            <span className="text-xs font-bold hidden sm:inline">Exit</span>
+            <span className="text-xs font-bold hidden sm:inline">خروج</span>
           </Button>
         </div>
       </div>
